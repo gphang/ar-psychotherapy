@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Homepage.unity
+    guid: a9386f4b3f03247e6b6bbef2364ab58d
+  - enabled: 1
+    path: Assets/Scenes/AvatarSelection.unity
+    guid: 6ffe44d8b20a64f1abd4868524f9ac19
+  m_configObjects:
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 394313cbdb8e74badb89800ebfe9605d, type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: ad5091221308047d99b112a6f6284235, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 95ea944c193984b72be968dc8d66a2e5, type: 2}

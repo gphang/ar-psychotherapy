@@ -1,0 +1,56 @@
+# Unity generated files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+Assets/AssetStoreTools*
+
+# VS/JetBrains IDEs
+.vscode/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# Unity build logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Auto-generated meta
+*.pidb.meta
+*.pdb
+*.mdb
+
+# Unity cache
+MemoryCaptures/
+Logs/
+UserSettings/
+
+# Git housekeeping
+.git/gc.log
+
+# Ignore build artifacts
+/build*
+*.app
+*.apk
+*.ipa
+
+
+# TEMP: only push assets first
+# /ar-app/Packages/
+# /ar-app/ProjectSettings/
+# /ar-app/Assets/Rendering
+# /ar-app/Assets/Samples
+# /ar-app/Assets/Scenes
+# /ar-app/Assets/TextMesh Pro
+# /ar-app/Assets/XR
