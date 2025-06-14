@@ -45,12 +45,12 @@ UserSettings/
 *.apk
 *.ipa
 
+# Ignore TextMesh Pro Documentations & Examples
+ar-app/Assets/TextMesh Pro/Documentation.meta
+ar-app/Assets/TextMesh Pro/Documentation/
+ar-app/Assets/TextMesh Pro/Examples & Extras.meta
+ar-app/Assets/TextMesh Pro/Examples & Extras/
 
-# TEMP: only push assets first
-# /ar-app/Packages/
-# /ar-app/ProjectSettings/
-# /ar-app/Assets/Rendering
-# /ar-app/Assets/Samples
-# /ar-app/Assets/Scenes
-# /ar-app/Assets/TextMesh Pro
-# /ar-app/Assets/XR
+# Ignore MetaPerson samples
+ar-app/Assets/Samples.meta
+ar-app/Assets/Samples/
