@@ -1,0 +1,57 @@
+# Unity generated files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+Assets/AssetStoreTools*
+
+# VS/JetBrains IDEs
+.vscode/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# Unity build logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Auto-generated meta
+*.pidb.meta
+*.pdb
+*.mdb
+
+# Unity cache
+MemoryCaptures/
+Logs/
+UserSettings/
+
+# Git housekeeping
+.git/gc.log
+
+# Ignore build artifacts
+/build*
+*.app
+*.apk
+*.ipa
+/build-ios
+
+
+
+# Ignore TextMesh Pro Documentations & Examples
+ar-app/Assets/TextMesh Pro
+ar-app/Assets/TextMesh Pro.meta
+
+# Ignore MetaPerson samples
+ar-app/Assets/Samples.meta
+ar-app/Assets/Samples/
