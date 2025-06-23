@@ -17,6 +17,19 @@ MetaPerson Avatar Documentation: https://docs.metaperson.avatarsdk.com/
 
 ## Deployment
 
+### Running the Chatbot
+Download Ollama from: https://ollama.com/download
+Download ngrok following: https://gist.github.com/wosephjeber/aa174fb851dfe87e644e
+
+In terminal, first run Ollama on your local host. Then, run it on ngrok before deploying on your mobile devices
+```
+OLLAMA_HOST="0.0.0.0" ollama serve
+ngrok http 11434
+```
+
+Running ngrok would provide you with a public URL, which you would have to use to update the webRequest in Unity script (OllamaController.cs), using the format: "<ngrok_url>/v1/completions"
+
+
 - To deploy to iOS:
   - Open in Xcode via Unity > Build Settings > iOS
   - Configure signing & provisioning profile

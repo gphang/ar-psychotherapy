@@ -10,7 +10,6 @@ namespace AvatarSDK.MetaPerson.Sample
 {
 	public class MetaPersonSample : MonoBehaviour
 	{
-		// public string modelUrl = string.Empty;
 		public Button loadAvatarButton;
 		public Text progressText;
 		public TMP_Text titleText;
@@ -24,7 +23,7 @@ namespace AvatarSDK.MetaPerson.Sample
 		public TMP_Text nameInstruction;
 		public TMP_InputField inputName;
 
-		// private gameObject currentLoadedAvatar;
+		// private GameObject currentLoadedAvatar;
 
 		public List<string> avatarURLs = new List<string>()
 		{
@@ -36,15 +35,12 @@ namespace AvatarSDK.MetaPerson.Sample
 
 		void Start()
 		{
-			// Assign listeners to buttons
-            // if (loadAvatarButton != null)
-            //     loadAvatarButton.onClick.AddListener(OnLoadAvatarButtonClick);
-            if (previousAvatarButton != null)
-                previousAvatarButton.onClick.AddListener(OnPreviousAvatarButtonClick);
-            if (nextAvatarButton != null)
-                nextAvatarButton.onClick.AddListener(OnNextAvatarButtonClick);
-			if (continueButton != null)
-                continueButton.onClick.AddListener(OnContinueButtonClick);
+            // if (previousAvatarButton != null)
+            //     previousAvatarButton.onClick.AddListener(OnPreviousAvatarButtonClick);
+            // if (nextAvatarButton != null)
+            //     nextAvatarButton.onClick.AddListener(OnNextAvatarButtonClick);
+			// if (continueButton != null)
+            //     continueButton.onClick.AddListener(OnContinueButtonClick);
 
 			SetAvatarNavigationButtonsActive(false);
 			SetNameButtonsActive(false);
@@ -54,10 +50,6 @@ namespace AvatarSDK.MetaPerson.Sample
 
 		public void OnLoadAvatarButtonClick()
 		{
-			// if (!string.IsNullOrEmpty(modelUrl))
-				// LoadAvatar();
-			// else
-				// progressText.text = "Model URL isn't provided.";
 			LoadAvatarByIndex(0);
 		}
 
@@ -94,11 +86,21 @@ namespace AvatarSDK.MetaPerson.Sample
 			previousAvatarButton.interactable = false;
 			nextAvatarButton.interactable = false;
 			SetAvatarNavigationButtonsActive(false);
+
+			// destroy previous avatar loaded if exists
+			// if (currentLoadedAvatar != null)
+			// {
+			// 	Destroy(currentLoadedAvatar);
+			// 	currentLoadedAvatar = null;
+			// }
 			
-			string modelUrl = avatarURLs[0];
+			string modelUrl = avatarURLs[index];
 			bool isModelLoaded = await metaPersonLoader.LoadModelAsync(modelUrl, p => progressText.text = string.Format("Downloading avatar: {0}%", (int)(p * 100)));
+
 			if (isModelLoaded)
 			{
+				// currentLoadedAvatar = GameObject.Find("MetaPersonModel");
+
 				loadAvatarButton.gameObject.SetActive(false);
 				progressText.gameObject.SetActive(false);
 				titleText.gameObject.SetActive(false);
@@ -127,6 +129,7 @@ namespace AvatarSDK.MetaPerson.Sample
 				inputName.gameObject.SetActive(active);
 		}
 
+
         public void OnPreviousAvatarButtonClick()
         {
             if (avatarURLs.Count == 0) return;
@@ -136,6 +139,10 @@ namespace AvatarSDK.MetaPerson.Sample
             {
                 avatarIndex = avatarURLs.Count - 1;  // Wrap around to the last avatar
             }
+
+			GameObject currentLoadedAvatar = GameObject.Find("MetaPersonModel");
+			Destroy(currentLoadedAvatar);
+			
             LoadAvatarByIndex(avatarIndex);
         }
         public void OnNextAvatarButtonClick()
@@ -147,8 +154,13 @@ namespace AvatarSDK.MetaPerson.Sample
             {
                 avatarIndex = 0;  // Wrap around to the first avatar
             }
+
+			GameObject currentLoadedAvatar = GameObject.Find("MetaPersonModel");
+			Destroy(currentLoadedAvatar);
+
             LoadAvatarByIndex(avatarIndex);
         }
+
 		public void OnContinueButtonClick()
 		{
 			SetAvatarNavigationButtonsActive(false);
