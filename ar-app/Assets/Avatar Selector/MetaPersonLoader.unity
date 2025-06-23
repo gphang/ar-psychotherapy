@@ -156,7 +156,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -120}
+  m_AnchoredPosition: {x: 0, y: -100}
   m_SizeDelta: {x: 800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &20958645
@@ -584,8 +584,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 388322363}
-  - component: {fileID: 388322364}
   - component: {fileID: 388322365}
+  - component: {fileID: 388322366}
+  - component: {fileID: 388322367}
   m_Layer: 0
   m_Name: SceneHandler
   m_TagString: Untagged
@@ -608,31 +609,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &388322364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388322361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 484ea8a245a134209beac39c3e98abd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loadAvatarButton: {fileID: 624124094}
-  progressText: {fileID: 1124280430}
-  titleText: {fileID: 1616086006}
-  descriptionText: {fileID: 1358962604}
-  metaPersonLoader: {fileID: 1357355787}
-  previousAvatarButton: {fileID: 401748062}
-  nextAvatarButton: {fileID: 1236360205}
-  continueButton: {fileID: 352845912}
-  nameInstruction: {fileID: 20958646}
-  inputName: {fileID: 1053932400}
-  avatarURLs:
-  - https://metaperson.avatarsdk.com/avatars/22816b47-c188-41d6-9069-efbcb69f9f6e/model.glb
-  - https://metaperson.avatarsdk.com/avatars/c458d7cf-0a98-4dbb-9519-74c367ff2fcd/model.glb
 --- !u!114 &388322365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,6 +628,43 @@ MonoBehaviour:
   therapistNameInputField: {fileID: 1053932400}
   confirmButtonPhase2: {fileID: 822786402}
   selectedAvatar: {fileID: 1399397892}
+--- !u!114 &388322366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388322361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 042b97ff0ddf54ba1818a0a7e9cf5554, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadAvatarButton: {fileID: 624124094}
+  progressText: {fileID: 1124280430}
+  titleText: {fileID: 1616086006}
+  descriptionText: {fileID: 1358962604}
+  mpl: {fileID: 1357355787}
+  previousAvatarButton: {fileID: 401748062}
+  nextAvatarButton: {fileID: 1236360205}
+  continueButton: {fileID: 352845912}
+  nameInstruction: {fileID: 20958646}
+  inputName: {fileID: 1053932400}
+  avatarURLs:
+  - 16568EC8
+  - 731634B1
+--- !u!114 &388322367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388322361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4750ddc1ccb6420d942e76a7edf0d2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &401748058
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,7 +785,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 388322364}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: AvatarSDK.MetaPerson.Sample.MetaPersonSample, Assembly-CSharp
         m_MethodName: OnPreviousAvatarButtonClick
         m_Mode: 1
@@ -1001,8 +1014,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 388322364}
-        m_TargetAssemblyTypeName: AvatarSDK.MetaPerson.Sample.MetaPersonSample, Assembly-CSharp
+      - m_Target: {fileID: 388322366}
+        m_TargetAssemblyTypeName: AvatarSDK.MetaPerson.Sample.LoadScene, Assembly-CSharp
         m_MethodName: OnLoadAvatarButtonClick
         m_Mode: 1
         m_Arguments:
@@ -1675,7 +1688,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -180}
+  m_AnchoredPosition: {x: 0, y: -145}
   m_SizeDelta: {x: 320, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1053932402
@@ -1750,7 +1763,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -260}
+  m_AnchoredPosition: {x: 0, y: 40}
   m_SizeDelta: {x: 1040, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1124280430
@@ -1937,7 +1950,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 388322364}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: AvatarSDK.MetaPerson.Sample.MetaPersonSample, Assembly-CSharp
         m_MethodName: OnNextAvatarButtonClick
         m_Mode: 1
@@ -2018,8 +2031,6 @@ GameObject:
   - component: {fileID: 1279418374}
   - component: {fileID: 1279418373}
   - component: {fileID: 1279418372}
-  - component: {fileID: 1279418377}
-  - component: {fileID: 1279418376}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2119,50 +2130,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1279418376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1279418371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9402a322d06c544e5916a2958414df28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  confirmButtonPhase1: {fileID: 352845912}
-  nextAvatarButton: {fileID: 1236360205}
-  previousAvatarButton: {fileID: 401748062}
-  therapistInputInstructions: {fileID: 0}
-  therapistNameInputField: {fileID: 1053932400}
-  confirmButtonPhase2: {fileID: 822786402}
-  selectedAvatar: {fileID: 0}
---- !u!114 &1279418377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1279418371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 484ea8a245a134209beac39c3e98abd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loadAvatarButton: {fileID: 624124094}
-  progressText: {fileID: 1124280430}
-  titleText: {fileID: 1616086006}
-  descriptionText: {fileID: 1358962604}
-  metaPersonLoader: {fileID: 0}
-  previousAvatarButton: {fileID: 401748062}
-  nextAvatarButton: {fileID: 1236360205}
-  continueButton: {fileID: 352845912}
-  nameInstruction: {fileID: 20958646}
-  inputName: {fileID: 1053932400}
-  avatarURLs:
-  - https://metaperson.avatarsdk.com/avatars/22816b47-c188-41d6-9069-efbcb69f9f6e/model.glb
-  - https://metaperson.avatarsdk.com/avatars/c458d7cf-0a98-4dbb-9519-74c367ff2fcd/model.glb
 --- !u!114 &1357355787 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3399267183235669353, guid: e2b1f2ee0d7364a929a80ebfbbab1f89, type: 3}
