@@ -40,6 +40,9 @@ public class OllamaUsage
 
 public class OllamaController : MonoBehaviour
 {
+    public string ollamaUrl = "https://798c-31-205-214-84.ngrok-free.app/v1/completions";
+    public EmotionClassifier emotionClassifier;
+
     // public TMP_Text responseTextBox;
     public Button sendButton;
     public TMP_InputField inputField;
@@ -71,15 +74,31 @@ public class OllamaController : MonoBehaviour
 
     public void SendMessageToOllama()
     {
-        if (string.IsNullOrWhiteSpace(inputField.text))
+        Debug.Log("1. SendMessageToOllama function was called!");
+
+        string userText = inputField.text;
+
+        if (string.IsNullOrWhiteSpace(userText))
         {
             return;
         }
         StartCoroutine(Send());
+
+        // Get user's emotional state from EmotionClassifier
+        if (emotionClassifier != null)
+        {
+            emotionClassifier.RequestEmotion(userText);
+        }
+        else
+        {
+            Debug.LogWarning("EmotionClassifier reference not set in the Inspector.");
+        }
     }
 
     private IEnumerator Send()
     {
+        Debug.Log("2. 'Send' coroutine has started, preparing web request...");
+
         OllamaRequest request = new OllamaRequest();
         request.model = "llama3.2:latest";
 
@@ -91,12 +110,14 @@ public class OllamaController : MonoBehaviour
 
         string jsonToSend = JsonUtility.ToJson(request);
 
+        // --- ADD THESE LINES FOR THE FINAL DEBUG ---
+        Debug.Log("--- FINAL DEBUG CHECK ---");
+        Debug.Log("URL being sent: " + ollamaUrl);
+        Debug.Log("JSON being sent: " + jsonToSend);
+        // --- END OF ADDED LINES ---
 
 
-        using (UnityWebRequest webRequest =
-               new UnityWebRequest(
-                //    "http://10.74.130.93:11434/v1/completions", "POST"))
-                "https://2a45-31-205-214-84.ngrok-free.app/v1/completions", "POST"))
+        using (UnityWebRequest webRequest = new UnityWebRequest(ollamaUrl, "POST"))
         {
             byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonToSend);
             webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);

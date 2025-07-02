@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI; // For InputField and Button
-using TMPro; // For TextMeshPro components
+using TMPro;
 using UnityEngine.Networking; // For UnityWebRequest
 using System.Security.Cryptography; // For MD5 hashing
-using AvatarSDK.MetaPerson.Loader; // Assuming this is your avatar loader
+using AvatarSDK.MetaPerson.Loader;
 
 namespace AvatarSDK.MetaPerson.Sample
 {

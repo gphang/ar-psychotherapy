@@ -46,6 +46,9 @@ UserSettings/
 *.ipa
 /build-ios
 
+emotion_classifier/venv
+emotion_classifier/models
+emotion_classifier/T5_small_emotion.pt
 
 
 # Ignore TextMesh Pro Documentations & Examples

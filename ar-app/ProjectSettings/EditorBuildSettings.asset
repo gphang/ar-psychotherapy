@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Avatar Selector/MetaPersonLoader.unity
     guid: 9fc0d4010bcf28b4594072e72b8655ab
   - enabled: 1
+    path: Assets/Chatbot Interact/ChatbotScene.unity
+    guid: 00e34f90904084bf299af44ff82aee17
+  - enabled: 1
     path: Assets/AR Display/ARScene.unity
     guid: f1e6ff0217a2b4ae08a92a890244b72a
   m_configObjects:

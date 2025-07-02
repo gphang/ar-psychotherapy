@@ -1,0 +1,7 @@
+pytorch-lightning
+torch
+transformers
+flask
+requests
+gunicorn
+sentencepiece
