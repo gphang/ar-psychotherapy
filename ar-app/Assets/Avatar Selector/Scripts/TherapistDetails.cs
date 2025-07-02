@@ -14,14 +14,14 @@ public static class GameData
 public class TherapistDetails : MonoBehaviour
 {
     // Phase 1
-    public Button confirmButtonPhase1; // The "Confirm" button for avatar selection
-    public Button nextAvatarButton;    // The "Next Avatar" button
-    public Button previousAvatarButton;// The "Previous Avatar" button
+    public Button confirmButtonPhase1;
+    public Button nextAvatarButton;
+    public Button previousAvatarButton;
 
     // Phase 2
     public TMP_Text therapistInputInstructions;
-    public TMP_InputField therapistNameInputField; // The input field for therapist's name
-    public Button confirmButtonPhase2;      // The new "Confirm" button for therapist name
+    public TMP_InputField therapistNameInputField;
+    public Button confirmButtonPhase2;
 
     public GameObject selectedAvatar;
 
@@ -80,22 +80,7 @@ public class TherapistDetails : MonoBehaviour
         // statusText.gameObject.SetActive(true);
 
         DontDestroyOnLoad(selectedAvatar);
-        SceneManager.LoadScene("ARScene");
-
-
-
-
-        // Optional: Update status text to show success or the name
-        // if (statusText != null)
-        // {
-        //     statusText.text = "Therapist: " + therapistName + " is confirmed! You can now proceed.";
-        //     statusText.color = Color.green; // Make text green for success
-        // }
-
-        // --- TODO: Add your logic here after therapist name is confirmed ---
-        // For example, load the next scene, enable AR placement, etc.
-        // Example: FindObjectOfType<MetaPersonPlacement>().enabled = true;
-        // Example: SceneManager.LoadScene("ARPlacementScene");
+        SceneManager.LoadScene("ChatbotScene");
     }
 
     // Helper to show Phase 1 UI elements
@@ -106,7 +91,6 @@ public class TherapistDetails : MonoBehaviour
         previousAvatarButton.gameObject.SetActive(true);
 
         HidePhase2UI();
-        // if (statusText != null) statusText.gameObject.SetActive(false); // Hide status text initially
     }
 
     // Helper method to show Phase 2 UI elements
