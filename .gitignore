@@ -46,16 +46,13 @@ UserSettings/
 *.ipa
 /build-ios
 
-emotion_classifier/venv
-emotion_classifier/models
-emotion_classifier/T5_small_emotion.pt
-emotion_classifier/RoBERTa_12_emotions.pt
-
-
 # Ignore TextMesh Pro Documentations & Examples
 ar-app/Assets/TextMesh Pro
 ar-app/Assets/TextMesh Pro.meta
 
-# Ignore MetaPerson samples
-ar-app/Assets/Samples.meta
-ar-app/Assets/Samples/
+# Ignore files that are too big: download from Google Drive instead
+emotion_classifier/venv
+emotion_classifier/models
+emotion_classifier/T5_small_emotion.pt
+emotion_classifier/RoBERTa_12_emotions.pt
+ar-app/Assets/Avatar\ Selector/ChildhoodAvatarGenerate/UniWebView

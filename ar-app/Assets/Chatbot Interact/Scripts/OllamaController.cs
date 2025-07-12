@@ -74,7 +74,7 @@ public class OllamaController : MonoBehaviour
 
     public void SendMessageToOllama()
     {
-        Debug.Log("1. SendMessageToOllama function was called!");
+        // Debug.Log("1. SendMessageToOllama function was called!");
 
         string userText = inputField.text;
 
@@ -97,12 +97,12 @@ public class OllamaController : MonoBehaviour
 
     private IEnumerator Send()
     {
-        Debug.Log("2. 'Send' coroutine has started, preparing web request...");
+        // Debug.Log("2. 'Send' coroutine has started, preparing web request...");
 
         OllamaRequest request = new OllamaRequest();
         request.model = "llama3.2:latest";
 
-        string modifiedPrompt = $"{inputField.text}\n\nLimit your response to 250 characters.";
+        string modifiedPrompt = $"You are an empathetic psychotherapist.\n{inputField.text}\nLimit your response to 250 characters.";
         request.prompt = modifiedPrompt;
 
         CreateMessageBubble(userMessagePrefab, inputField.text);  // bubble for user's message
@@ -110,11 +110,8 @@ public class OllamaController : MonoBehaviour
 
         string jsonToSend = JsonUtility.ToJson(request);
 
-        // --- ADD THESE LINES FOR THE FINAL DEBUG ---
-        Debug.Log("--- FINAL DEBUG CHECK ---");
         Debug.Log("URL being sent: " + ollamaUrl);
         Debug.Log("JSON being sent: " + jsonToSend);
-        // --- END OF ADDED LINES ---
 
 
         using (UnityWebRequest webRequest = new UnityWebRequest(ollamaUrl, "POST"))

@@ -1,43 +1,75 @@
-using AvatarSDK.MetaPerson.Loader;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using AvatarSDK.MetaPerson.Loader;
+using AvatarSDK.MetaPerson.Sample;
+using System.Threading.Tasks;        // for concurrent loading of avatars
 
 public class AvatarInteract : MonoBehaviour
 {
-    public GameObject avatarPrefab;  // Assign in Inspector
-    public Transform avatarSpawnPoint;  // Where the avatar should appear
+    public MetaPersonLoader childMetaPersonLoader;
+    public MetaPersonLoader therapistMetaPersonLoader;
 
-    private GameObject currentAvatarInstance;
-
-    void Start()
+    async void Start()
     {
-        GameObject existingAvatar = GameObject.Find("MetaPersonModel");
-
-        // existingAvatar.transform.position = Vector3.zero;
-        // existingAvatar.transform.rotation = Quaternion.Euler(0, 0, 0); // Face forward
-
-        existingAvatar.transform.position = avatarSpawnPoint.position;
-        existingAvatar.transform.rotation = avatarSpawnPoint.rotation;
-
-
-        DontDestroyOnLoad(existingAvatar); // persist avatar between scenes
+        // Load concurrently
+        Task childTask = LoadChildAvatarAsync();
+        Task therapistTask = LoadTherapistAvatarAsync();
+        
+        await Task.WhenAll(childTask, therapistTask);
+        Debug.Log("Both avatars finished loading.");
     }
 
-    // private void LoadAvatar(int index)
-    // {
-    //     // Instantiate new avatar with 180° rotation to face forward
-    //     currentAvatarInstance = Instantiate(
-    //         avatarPrefab,
-    //         avatarSpawnPoint.position,
-    //         Quaternion.Euler(0, 0, 0) // Apply Y-axis rotation here
-    //     );
+    private async Task LoadChildAvatarAsync()
+    {
+        string childAvatarUrl = AvatarManager.Instance.ChildAvatarUrl;
+        if (string.IsNullOrEmpty(childAvatarUrl))
+        {
+            Debug.LogError("Child Avatar URL not found in AvatarManager.");
+            return;
+        }
 
+        foreach (Transform child in childMetaPersonLoader.transform)
+        {
+            Destroy(child.gameObject);
+        }
 
-    //     // Scale avatar to correct size
-    //     // currentAvatarInstance.transform.localScale = new Vector3(10f, 10f, 10f);
-    // }
+        bool isLoaded = await childMetaPersonLoader.LoadModelAsync(childAvatarUrl);
+        if (isLoaded && childMetaPersonLoader.transform.childCount > 0)
+        {
+            GameObject childAvatar = childMetaPersonLoader.transform.GetChild(0).gameObject;
+
+            // Disable avatar ability to rotate
+            var rotationScript = childAvatar.GetComponent<CameraController>();
+            if (rotationScript != null) rotationScript.enabled = false;
+        }
+        else
+        {
+            Debug.LogError("Failed to load Child Avatar from URL: " + childAvatarUrl);
+        }
+    }
+
+    private async Task LoadTherapistAvatarAsync()
+    {
+        string therapistAvatarUrl = AvatarManager.Instance.TherapistAvatarUrl;
+        if (string.IsNullOrEmpty(therapistAvatarUrl))
+        {
+            Debug.LogError("Therapist Avatar URL not found in AvatarManager.");
+            return;
+        }
+
+        foreach (Transform child in therapistMetaPersonLoader.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        bool isLoaded = await therapistMetaPersonLoader.LoadModelAsync(therapistAvatarUrl);
+        if (isLoaded && therapistMetaPersonLoader.transform.childCount > 0)
+        {
+            // The position/rotation code is removed here as well.
+            GameObject therapistAvatar = therapistMetaPersonLoader.transform.GetChild(0).gameObject;
+        }
+        else
+        {
+            Debug.LogError("Failed to load Therapist Avatar from URL: " + therapistAvatarUrl);
+        }
+    }
 }
