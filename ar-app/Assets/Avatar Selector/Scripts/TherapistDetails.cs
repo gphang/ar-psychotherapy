@@ -79,7 +79,7 @@ public class TherapistDetails : MonoBehaviour
         // statusText.color = Color.yellow;
         // statusText.gameObject.SetActive(true);
 
-        DontDestroyOnLoad(selectedAvatar);
+        // DontDestroyOnLoad(selectedAvatar);
         SceneManager.LoadScene("ChatbotScene");
     }
 
