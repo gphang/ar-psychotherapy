@@ -15,7 +15,7 @@ MetaPerson Avatar Documentation: https://docs.metaperson.avatarsdk.com/
 - `.gitignore` - Configured to avoid Unity-generated and large unnecessary files
 
 
-## Deployment
+## Local Deployment
 
 ### Running the Chatbot
 Download Ollama from: https://ollama.com/download
@@ -29,6 +29,15 @@ ngrok http 11434
 
 Running ngrok would provide you with a public URL, which you would have to use to update the webRequest in Unity script (OllamaController.cs), using the format: "<ngrok_url>/v1/completions"
 
+
+### Running the Emotion Classifier
+Download all requirements.txt
+
+In terminal, run the following to host the emotion classifier on a Flask app:
+```
+cd emotion_classifier
+python app.py
+```
 
 - To deploy to iOS:
   - Open in Xcode via Unity > Build Settings > iOS
