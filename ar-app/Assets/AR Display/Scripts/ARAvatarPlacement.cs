@@ -61,7 +61,11 @@ public class ARPlacementController : MonoBehaviour
 
                         // --- MODIFIED LOGIC ---
                         // Instead of instantiating, we move the existing avatar to the hit position.
-                        avatarToPlace.transform.position = hitPose.position;
+                        Transform cam = Camera.main.transform;
+                        Vector3 pos = cam.position + cam.forward * 1.5f;
+                        avatarToPlace.transform.position = pos;
+
+                        // avatarToPlace.transform.position = hitPose.position;
 
                         // Ensure the avatar is visible now that it has been placed.
                         avatarToPlace.SetActive(true);

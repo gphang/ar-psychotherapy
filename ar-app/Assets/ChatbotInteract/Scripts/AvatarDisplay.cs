@@ -132,7 +132,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using AvatarSDK.MetaPerson.Loader;
 using AvatarSDK.MetaPerson.Sample;
-using TMPro; // Changed back to TMPro
+using TMPro;
 
 public class AvatarDisplay : MonoBehaviour
 {

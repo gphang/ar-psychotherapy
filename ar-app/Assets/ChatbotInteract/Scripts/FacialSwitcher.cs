@@ -38,11 +38,37 @@ public class FacialSwitcher : MonoBehaviour {
     [SerializeField] private FacialExpression joy;
     [SerializeField] private FacialExpression guilt;
     
+    // public GameObject Avatar {
+    //     private get => avatar;
+    //     set {
+    //         avatar = value;
+    //         skin = avatar.transform.Find("AvatarHead").gameObject.GetComponent<SkinnedMeshRenderer>();
+    //     }
+    // }
     public GameObject Avatar {
         private get => avatar;
         set {
+            // This log will confirm if the assignment is happening at all.
+            Debug.Log("<color=purple>FacialSwitcher: Attempting to set Avatar property...</color>", value);
+            
             avatar = value;
-            skin = avatar.transform.Find("AvatarHead").gameObject.GetComponent<SkinnedMeshRenderer>();
+            if (avatar == null) {
+                Debug.LogError("CRITICAL: A null GameObject was assigned to FacialSwitcher.Avatar!", this);
+                skin = null;
+                return;
+            }
+
+            // facial expression comes from editing AvatarHead BlendShapes
+            Transform headTransform = avatar.transform.Find("AvatarHead");
+            
+            skin = headTransform.GetComponent<SkinnedMeshRenderer>();
+
+            if (skin == null) {
+                Debug.LogError("CRITICAL: FacialSwitcher could NOT find a SkinnedMeshRenderer on the assigned avatar or its children!", avatar);
+            } else {
+                Debug.Log("<color=green>SUCCESS:</color> FacialSwitcher found SkinnedMeshRenderer on -> " + skin.gameObject.name, skin.gameObject);
+                Debug.Log($"<color=cyan>FacialSwitcher is controlling the SkinnedMeshRenderer on GameObject:</color> {skin.gameObject.name} | <color=cyan>It has {skin.sharedMesh.blendShapeCount} blendshapes.</color>");
+            }
         }
     }
 
@@ -165,7 +191,14 @@ public class FacialSwitcher : MonoBehaviour {
     }
     
     public void SetJoy() {
-        if (!skin) return;
+        if (!skin) {
+            Debug.LogError("FacialSwitcher: Cannot set expression because 'skin' reference is null.", this.gameObject);
+            return;
+        }
+        if (joy == null) {
+            Debug.LogError("FacialSwitcher: Cannot play 'Joy' because the 'joy' FacialExpression asset is not assigned in the Inspector!", this.gameObject);
+            return;
+        }
         Transition = StartCoroutine(IdleThenTransitionExpression(joy));
     }
     
@@ -177,32 +210,81 @@ public class FacialSwitcher : MonoBehaviour {
 
     #region Internal
 
-    private void GetCurrentWeights() {
+    // private void GetCurrentWeights() {
+    //     if (!skin) return;
+        
+    //     for (int i = 0; i < skin.sharedMesh.blendShapeCount; i++)
+    //     {
+    //         currentWeights[i] = skin.GetBlendShapeWeight(i);
+    //     }
+    // }
+
+    // private IEnumerator TransitionExpression(FacialExpression exp) {
+        
+    //     GetCurrentWeights();
+        
+    //     float progress = 0.0f;
+    //     Dictionary<int, float> targetWeights = new Dictionary<int, float>(currentWeights);
+
+    //     foreach (BlendShapeWeight weight in exp.BlendShapeWeights) {
+    //         targetWeights[weight.index] = weight.weight;
+    //     }
+        
+    //     while (progress < 1.0f) {
+    //         progress += Time.deltaTime * transitionSpeed;
+    //         foreach (KeyValuePair<int,float> targetWeight in targetWeights) {
+    //             int index = targetWeight.Key;
+    //             float currentWeight = Mathf.Lerp(currentWeights[index], targetWeight.Value, progress);
+    //             skin.SetBlendShapeWeight(index, currentWeight);
+    //         }
+    //         yield return null;
+    //     }
+    // }
+
+    // In FacialSwitcher.cs
+
+    // This method now CLEARS the dictionary first, which is safer.
+    private void GetCurrentWeights() 
+    {
         if (!skin) return;
         
-        for (int i = 0; i < skin.sharedMesh.blendShapeCount; i++)
+        currentWeights.Clear();
+        for (int i = 0; i < skin.sharedMesh.blendShapeCount; i++) 
         {
-            currentWeights[i] = skin.GetBlendShapeWeight(i);
+            currentWeights.Add(i, skin.GetBlendShapeWeight(i));
         }
     }
 
-    private IEnumerator TransitionExpression(FacialExpression exp) {
-        
-        GetCurrentWeights();
-        
-        float progress = 0.0f;
-        Dictionary<int, float> targetWeights = new Dictionary<int, float>(currentWeights);
-
-        foreach (BlendShapeWeight weight in exp.BlendShapeWeights) {
-            targetWeights[weight.index] = weight.weight;
+    // This coroutine is now safer and more performant.
+    private IEnumerator TransitionExpression(FacialExpression exp) 
+    {
+        if (exp == null) 
+        {
+            Debug.LogError("FacialExpression asset is NULL. Aborting transition.");
+            yield break;
         }
         
-        while (progress < 1.0f) {
+        GetCurrentWeights(); 
+        
+        float progress = 0.0f;
+        while (progress < 1.0f) 
+        {
             progress += Time.deltaTime * transitionSpeed;
-            foreach (KeyValuePair<int,float> targetWeight in targetWeights) {
-                int index = targetWeight.Key;
-                float currentWeight = Mathf.Lerp(currentWeights[index], targetWeight.Value, progress);
-                skin.SetBlendShapeWeight(index, currentWeight);
+
+            foreach (BlendShapeWeight target in exp.BlendShapeWeights) 
+            {
+                // This check prevents the KeyNotFoundException crash.
+                if (currentWeights.ContainsKey(target.index)) 
+                {
+                    float startWeight = currentWeights[target.index];
+                    float newWeight = Mathf.Lerp(startWeight, target.weight, progress);
+                    skin.SetBlendShapeWeight(target.index, newWeight);
+                }
+                else
+                {
+                    // This warning will tell you exactly which index is wrong.
+                    Debug.LogWarning($"Invalid blendshape index '{target.index}' found in asset '{exp.name}'. Skipping.", this);
+                }
             }
             yield return null;
         }

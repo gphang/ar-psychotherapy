@@ -134,6 +134,15 @@ def get_classification(text):
     return label_map[label]
 
 
+
+
+
+
+
+
+
+
+
 # --- [Flask Web Server Logic] ---
 from flask import Flask, request, jsonify
 
@@ -146,8 +155,8 @@ def evaluate():
         return jsonify({'error': 'No text provided'}), 400
 
     user_text = data['text']
-    # emotion = get_emotion(user_text)
-    emotion = get_classification(user_text)
+    emotion = get_emotion(user_text)
+    # emotion = get_classification(user_text)
     
     print(f"Received: '{user_text}', Predicted: '{emotion}'") # Server-side log
     
