@@ -3,8 +3,8 @@
 An augmented reality (AR) mobile app that enables immersive, cost-efficient psychotherapy experiences. This app works with the Algorithmic Human Development Group at Imperial College London to provide Self-Initiated Humour Protocol (SIHP) as the form of psychotherapy. Users interact with an LLM-driven therapist avatar capable of recognizing emotional tone and speech through AI/ML models in real-time. Based on these insights, the avatar provides personalised self-intervention exercises to support users’ mental well-being.
 
 ## Features
-- 🎭 Emotion recognition from user text (DistilBERT)
+- 🎭 Emotion recognition from user text (fine-tuned RoBERTa)
 - 🗣️ Real-time speech-to-text using Whisper (OpenAI API)
-- 🤖 Empathetic avatar powered by a fine-tuned LLM therapist
+- 🤖 Empathetic avatar powered by a fine-tuned LLM therapist (using Ollama temporarily)
 - 📱 AR rendering using Unity (MetaPerson avatars in physical space)
 - 🧠 Mental health exercises tailored to user emotional state
