@@ -15,15 +15,6 @@ public class FacialSwitcher : MonoBehaviour {
     // Emotion states from classifier: fear, love, instability, disgust, disappointment, shame, anger, jealous, sadness, envy, joy, guilt
     // NOTE: future direction: degree of emotion?
 
-    // [SerializeField] private FacialExpression idle;
-    // [SerializeField] private FacialExpression happy;
-    // [SerializeField] private FacialExpression sad;
-    // [SerializeField] private FacialExpression angry;
-    // [SerializeField] private FacialExpression fearful;
-    // [SerializeField] private FacialExpression disgusted;
-    // [SerializeField] private FacialExpression surprise;
-
-
     [SerializeField] private FacialExpression idle;
     [SerializeField] private FacialExpression fear;
     [SerializeField] private FacialExpression love;
@@ -38,19 +29,9 @@ public class FacialSwitcher : MonoBehaviour {
     [SerializeField] private FacialExpression joy;
     [SerializeField] private FacialExpression guilt;
     
-    // public GameObject Avatar {
-    //     private get => avatar;
-    //     set {
-    //         avatar = value;
-    //         skin = avatar.transform.Find("AvatarHead").gameObject.GetComponent<SkinnedMeshRenderer>();
-    //     }
-    // }
     public GameObject Avatar {
         private get => avatar;
         set {
-            // This log will confirm if the assignment is happening at all.
-            Debug.Log("<color=purple>FacialSwitcher: Attempting to set Avatar property...</color>", value);
-            
             avatar = value;
             if (avatar == null) {
                 Debug.LogError("CRITICAL: A null GameObject was assigned to FacialSwitcher.Avatar!", this);
@@ -66,7 +47,6 @@ public class FacialSwitcher : MonoBehaviour {
             if (skin == null) {
                 Debug.LogError("CRITICAL: FacialSwitcher could NOT find a SkinnedMeshRenderer on the assigned avatar or its children!", avatar);
             } else {
-                Debug.Log("<color=green>SUCCESS:</color> FacialSwitcher found SkinnedMeshRenderer on -> " + skin.gameObject.name, skin.gameObject);
                 Debug.Log($"<color=cyan>FacialSwitcher is controlling the SkinnedMeshRenderer on GameObject:</color> {skin.gameObject.name} | <color=cyan>It has {skin.sharedMesh.blendShapeCount} blendshapes.</color>");
             }
         }
@@ -93,45 +73,6 @@ public class FacialSwitcher : MonoBehaviour {
         }
     }
 
-    // public void SetIdle() {
-    //     if (!skin) return;
-    //     Transition = StartCoroutine(TransitionExpression(idle));
-    // }
-    
-    // public void SetHappy() {
-    //     if (!skin) return;
-    //     Transition = StartCoroutine(IdleThenTransitionExpression(happy));
-        
-    // }
-
-    // public void SetSad() {
-    //     if (!skin) return;
-    //     Transition = StartCoroutine(IdleThenTransitionExpression(sad));
-    // }
-
-    // public void SetAngry() {
-    //     if (!skin) return;
-    //     Transition = StartCoroutine(IdleThenTransitionExpression(angry));
-    // }
-    
-    // public void SetFearful() {
-    //     if (!skin) return;
-    //     Transition = StartCoroutine(IdleThenTransitionExpression(fearful));
-    // }
-    
-    // public void SetDisgusted() {
-    //     if (!skin) return;
-    //     Transition = StartCoroutine(IdleThenTransitionExpression(disgusted));
-    // }
-    
-    // public void SetSurprised() {
-    //     if (!skin) return;
-    //     Transition = StartCoroutine(IdleThenTransitionExpression(surprise));
-    // }
-
-
-
-    // TODO: temp animations, need to find better expressions for each emotion class
 
     public void SetIdle() {
         if (!skin) return;
@@ -210,40 +151,7 @@ public class FacialSwitcher : MonoBehaviour {
 
     #region Internal
 
-    // private void GetCurrentWeights() {
-    //     if (!skin) return;
-        
-    //     for (int i = 0; i < skin.sharedMesh.blendShapeCount; i++)
-    //     {
-    //         currentWeights[i] = skin.GetBlendShapeWeight(i);
-    //     }
-    // }
-
-    // private IEnumerator TransitionExpression(FacialExpression exp) {
-        
-    //     GetCurrentWeights();
-        
-    //     float progress = 0.0f;
-    //     Dictionary<int, float> targetWeights = new Dictionary<int, float>(currentWeights);
-
-    //     foreach (BlendShapeWeight weight in exp.BlendShapeWeights) {
-    //         targetWeights[weight.index] = weight.weight;
-    //     }
-        
-    //     while (progress < 1.0f) {
-    //         progress += Time.deltaTime * transitionSpeed;
-    //         foreach (KeyValuePair<int,float> targetWeight in targetWeights) {
-    //             int index = targetWeight.Key;
-    //             float currentWeight = Mathf.Lerp(currentWeights[index], targetWeight.Value, progress);
-    //             skin.SetBlendShapeWeight(index, currentWeight);
-    //         }
-    //         yield return null;
-    //     }
-    // }
-
-    // In FacialSwitcher.cs
-
-    // This method now CLEARS the dictionary first, which is safer.
+    // clears dictionary before adding weights for new expression
     private void GetCurrentWeights() 
     {
         if (!skin) return;

@@ -3,7 +3,8 @@ using UnityEngine;
 public class ActionController : MonoBehaviour
 {
     public AnimationManager am;
-    public FacialSwitcher fs;
+    public FacialSwitcher fs_child;
+    public FacialSwitcher fs_therapist;
 
     // This method is called when the script is enabled
     private void OnEnable()
@@ -27,7 +28,7 @@ public class ActionController : MonoBehaviour
     {
         Debug.Log("Emotion '" + emotion + "' detected. Triggering action.");
 
-        if (am == null || fs == null)
+        if (am == null || fs_child == null || fs_therapist == null)
         {
             Debug.LogError("CRITICAL: AnimationManager (am) or FacialSwitcher (fs) is NOT ASSIGNED in the ActionController's Inspector!");
             return;
@@ -44,67 +45,80 @@ public class ActionController : MonoBehaviour
         {
             case "idle":
                 am.SetIdle();
-                fs.SetIdle();
+                fs_child.SetIdle();
+                fs_therapist.SetIdle();
                 break;
 
             case "fear":
                 am.SetFear();
-                fs.SetFear();
+                fs_child.SetFear();
+                fs_therapist.SetFear();
                 break;
 
             case "love":
                 am.SetLove();
-                fs.SetLove();
+                fs_child.SetLove();
+                fs_therapist.SetLove();
                 break;
 
             case "instability":
                 am.SetInstability();
-                fs.SetInstability();
+                fs_child.SetInstability();
+                fs_therapist.SetInstability();
                 break;
 
             case "disgust":
                 am.SetDisgust();
-                fs.SetDisgust();
+                fs_child.SetDisgust();
+                fs_therapist.SetDisgust();
                 break;
 
             case "disappointment":
                 am.SetDisappointment();
-                fs.SetDisappointment();
+                fs_child.SetDisappointment();
+                fs_therapist.SetDisappointment();
                 break;
 
             case "shame":
                 am.SetShame();
-                fs.SetShame();
+                fs_child.SetShame();
+                fs_therapist.SetShame();
                 break;
 
             case "anger":
                 am.SetAnger();
-                fs.SetAnger();
+                fs_child.SetAnger();
+                fs_therapist.SetAnger();
                 break;
 
             case "jealous":
                 am.SetJealous();
-                fs.SetJealous();
+                fs_child.SetJealous();
+                fs_therapist.SetJealous();
                 break;
 
             case "sadness":
                 am.SetSadness();
-                fs.SetSadness();
+                fs_child.SetSadness();
+                fs_therapist.SetSadness();
                 break;
 
             case "envy":
                 am.SetEnvy();
-                fs.SetEnvy();
+                fs_child.SetEnvy();
+                fs_therapist.SetEnvy();
                 break;
 
             case "joy":
                 am.SetJoy();
-                fs.SetJoy();
+                fs_child.SetJoy();
+                fs_therapist.SetJoy();
                 break;
 
             case "guilt":
                 am.SetGuilt();
-                fs.SetGuilt();
+                fs_child.SetGuilt();
+                fs_therapist.SetGuilt();
                 break;
             
         }

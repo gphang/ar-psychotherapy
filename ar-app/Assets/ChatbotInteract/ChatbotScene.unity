@@ -465,19 +465,53 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3399267183235669355, guid: e2b1f2ee0d7364a929a80ebfbbab1f89, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 140500119}
   m_SourcePrefab: {fileID: 100100000, guid: e2b1f2ee0d7364a929a80ebfbbab1f89, type: 3}
 --- !u!114 &140500117 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3399267183235669353, guid: e2b1f2ee0d7364a929a80ebfbbab1f89, type: 3}
   m_PrefabInstance: {fileID: 140500116}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 140500118}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70210d6a2b681294dbf1fe3c6759b9c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &140500118 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3399267183235669355, guid: e2b1f2ee0d7364a929a80ebfbbab1f89, type: 3}
+  m_PrefabInstance: {fileID: 140500116}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &140500119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140500118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbda736dfc2ad415aaa7357150df2027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transitionSpeed: 1
+  idle: {fileID: 11400000, guid: 13884c0d3b49f9242a72ea4f4d5299b5, type: 2}
+  fear: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  love: {fileID: 11400000, guid: 70c31f88b0932514699ab90dbdeb8961, type: 2}
+  instability: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  disgust: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  disappointment: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  shame: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  anger: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  jealous: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  sadness: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  envy: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  joy: {fileID: 11400000, guid: 70c31f88b0932514699ab90dbdeb8961, type: 2}
+  guilt: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
 --- !u!1 &241419998
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,7 +1015,8 @@ MonoBehaviour:
   childMetaPersonLoader: {fileID: 372027257}
   therapistMetaPersonLoader: {fileID: 140500117}
   am: {fileID: 740061189}
-  facialSwitcher: {fileID: 372027259}
+  fs_child: {fileID: 372027259}
+  fs_therapist: {fileID: 140500119}
 --- !u!4 &740061186
 Transform:
   m_ObjectHideFlags: 0
@@ -1022,7 +1057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68da3107b74a4fc3996eec03bf42b57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ollamaUrl: https://f07ae35ea966.ngrok-free.app/v1/completions
+  ollamaUrl: https://136d20cce0d9.ngrok-free.app/v1/completions
   emotionClassifier: {fileID: 740061187}
   sendButton: {fileID: 1297808559}
   inputField: {fileID: 241420000}
@@ -1055,7 +1090,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   am: {fileID: 740061189}
-  fs: {fileID: 372027259}
+  fs_child: {fileID: 372027259}
+  fs_therapist: {fileID: 140500119}
 --- !u!1 &808187045
 GameObject:
   m_ObjectHideFlags: 0
