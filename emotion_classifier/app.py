@@ -5,6 +5,9 @@ from transformers import AutoModelForMaskedLM
 from tokenizers import ByteLevelBPETokenizer
 from tokenizers.processors import BertProcessing
 
+# Flask web server for retrieving classification from model
+from flask import Flask, request, jsonify
+
 
 emotions = ['fear', 'love', 'instability', 'disgust', 'disappointment',
           'shame', 'anger', 'jealous', 'sadness', 'envy', 'joy', 'guilt']
@@ -70,9 +73,6 @@ def get_classification(text):
     return label_map[label]
 
 
-# Flask web server for retrieving classification from model
-from flask import Flask, request, jsonify
-
 app = Flask(__name__)
 
 @app.route('/evaluate', methods=['POST'])
@@ -88,5 +88,6 @@ def evaluate():
     
     return jsonify({'emotion': emotion})
 
+# only for local testing
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

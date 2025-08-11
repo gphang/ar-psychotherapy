@@ -117,21 +117,13 @@ namespace AvatarSDK.MetaPerson.Sample
 
                     // Use the retrieved avatar URL to load the model
                     StartCoroutine(LoadModelCoroutine(avatarData.avatar_url));
-                    // progressText.text += $"\nAvatar has been successfully retrieved with the code {code}.";
-                    Debug.Log("Avatar retrieved successfully!");
 
-                    // avatarNameInputField.text = "";
-                    // avatarCodeInputField.text = "";
+                    Debug.Log("Avatar retrieved successfully!");
                 }
-                // else
-                // {
-                //     statusText.text = "We're sorry, but we couldn't parse avatar data. Please ensure the code is correct and try again.";
-                // }
             }
             else
             {
                 Debug.LogError("Error retrieving avatar data: " + www.error);
-                // statusText.text = "We're sorry, but we couldn't retrieve the avatar. Please ensure the code is correct and try again.";
             }
         }
 
@@ -142,6 +134,11 @@ namespace AvatarSDK.MetaPerson.Sample
             ClearExistingAvatar();
 
             progressText.gameObject.SetActive(true);
+
+            // Not able to interact with buttons while model is loading
+            previousAvatarButton.interactable = false;
+            nextAvatarButton.interactable = false;
+            continueButton.interactable = false;
 
             // Start downloading the model asynchronously and track progress
             Task<bool> downloadTask = mpl.LoadModelAsync(modelUrl, progress =>
@@ -158,18 +155,16 @@ namespace AvatarSDK.MetaPerson.Sample
 
             if (downloadTask.IsCompletedSuccessfully)
             {
-                // Update the status to indicate a successful download
-                // statusText.text = "Avatar downloaded successfully! You can now explore various animations and view your avatar in different scenes.";
-
                 progressText.gameObject.SetActive(false);
 
                 // Retrieve the loaded model from the MetaPersonLoader
                 GameObject model = mpl.transform.GetChild(0).gameObject;
-
-                // Update the AvatarManager with the current avatar URL
-                // AvatarManager.Instance.SetCurrentAvatar(modelUrl);
                 AvatarManager.Instance.SetTherapistAvatarUrl(modelUrl);
 
+                // Can interact with buttons once model is loaded
+                previousAvatarButton.interactable = true;
+                nextAvatarButton.interactable = true;
+                continueButton.interactable = true;
 
                 // Check if the model has an Animator component
                 if (!model.TryGetComponent(out Animator modelAnimator))
@@ -177,19 +172,6 @@ namespace AvatarSDK.MetaPerson.Sample
                     Debug.LogError("Model does not have an Animator component.");
                     yield break; // Exit the coroutine
                 }
-
-                // Bind the model's Animator avatar to the AnimationManager
-                // am.BindAnimationSwitcher(modelAnimator.avatar);
-                // Destroy(modelAnimator); // Remove the Animator to avoid conflicts
-
-                // Assign the loaded model to the FacialSwitcher for facial expressions
-                // facialSwitcher.Avatar = model;
-            }
-            else
-            {
-                // Display error if the download failed
-                // statusText.text = "We're sorry, but we couldn't download the avatar. Please ensure the code is correct and try again.";
-
             }
         }
 

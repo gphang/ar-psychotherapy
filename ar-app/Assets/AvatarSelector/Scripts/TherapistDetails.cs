@@ -5,11 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-// public static class GameData
-// {
-//     public static string TherapistName = "Therapist";  // default name if empty
-// }
-
 
 public class TherapistDetails : MonoBehaviour
 {
@@ -30,30 +25,24 @@ public class TherapistDetails : MonoBehaviour
         ShowPhase1UI();
     }
 
-    // --- Phase 1: Avatar Selection Confirmation ---
+    // takes place after the user selects the therapist's avatar
     public void OnConfirmAvatarSelection()
     {
-        // Hide Phase 1 UI elements
+        // Hide initial elements
         confirmButtonPhase1.gameObject.SetActive(false);
         nextAvatarButton.gameObject.SetActive(false);
         previousAvatarButton.gameObject.SetActive(false);
 
-        // Show Phase 2 UI elements
+        // Show elements for getting therapist's name
         ShowPhase2UI();
-
-        // // Optional: Update status text
-        // if (statusText != null)
-        // {
-        //     statusText.text = "Please enter the therapist's name:";
-        //     statusText.gameObject.SetActive(true);
-        // }
     }
 
-    // --- Phase 2: Therapist Name Confirmation ---
+
+
     public void OnConfirmTherapistName()
     {
         // Set therapist's name for later use
-        string therapistName = therapistNameInputField.text.Trim(); // get input + remove leading/trailing spaces
+        string therapistName = therapistNameInputField.text.Trim();
         if (!string.IsNullOrEmpty(therapistName))
         {
             GameData.TherapistName = therapistName;
@@ -74,16 +63,12 @@ public class TherapistDetails : MonoBehaviour
 
         HidePhase2UI();
 
-        // Transitioning to AR scene for psychotherapy
-        // statusText.gameObject.SetActive(false);
-        // statusText.text = "Loading AR experience...";
-        // statusText.color = Color.yellow;
-        // statusText.gameObject.SetActive(true);
-
         SceneManager.LoadScene("ChatbotScene");
     }
 
-    // Helper to show Phase 1 UI elements
+
+    // -------------------- HELPER FUNCTIONS --------------------
+
     private void ShowPhase1UI()
     {
         confirmButtonPhase1.gameObject.SetActive(true);
@@ -93,16 +78,14 @@ public class TherapistDetails : MonoBehaviour
         HidePhase2UI();
     }
 
-    // Helper method to show Phase 2 UI elements
     private void ShowPhase2UI()
     {
         therapistNameInputField.gameObject.SetActive(true);
-        therapistNameInputField.text = ""; // Clear previous input
+        therapistNameInputField.text = "";
         therapistInputInstructions.gameObject.SetActive(true);
         confirmButtonPhase2.gameObject.SetActive(true);
     }
 
-    // Helper method to hide Phase 2 UI elements
     private void HidePhase2UI()
     {
         therapistNameInputField.gameObject.SetActive(false);

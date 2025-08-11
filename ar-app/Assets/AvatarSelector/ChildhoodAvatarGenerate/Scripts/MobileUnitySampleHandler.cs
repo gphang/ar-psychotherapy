@@ -16,10 +16,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// Default names for user and therapist if field left blank
+// NEW ADDITION: gets names for user and therapist (default = User, Therapist)
 public static class GameData
 {
-    public static string UserName = "User";  // default empty
+    public static string UserName = "User";
 	public static string TherapistName = "Therapist";
 }
 
@@ -36,6 +36,7 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 
 		public TMP_Text title;
 		public TMP_Text instruction1;
+		public Image home_image;
 		public TMP_Text instruction2;
 		public TMP_InputField userNameInputField;
 		public Button selectTherapistButton;
@@ -52,13 +53,6 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 
 		public void OnGetAvatarButtonClick()
 		{
-			// Set user's name for later use
-			string userName = userNameInputField.text.Trim(); // Get input and remove leading/trailing spaces
-			if (!string.IsNullOrEmpty(userName))
-			{
-				GameData.UserName = userName;
-			}
-
 			UniWebView uniWebView = uniWebViewGameObject.GetComponent<UniWebView>();
 			if (uniWebView == null)
 			{
@@ -71,6 +65,17 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 			uniWebView.OnMessageReceived += OnMessageReceived;
 			uniWebView.Load("https://mobile.metaperson.avatarsdk.com/generator");
 			uniWebView.Show();
+		}
+
+		// Set user's name for later use
+		public void OnContinueButtonClick()
+		{
+			string userName = userNameInputField.text.Trim();
+			if (!string.IsNullOrEmpty(userName))
+			{
+				GameData.UserName = userName;
+				Debug.Log($"<color=cyan>SCENE 1:</color> Updating UserName from to '{userName}'");
+			}
 		}
 
 		private void OnPageFinished(UniWebView webView, int statusCode, string url)
@@ -144,7 +149,7 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 				webView.Hide();
 				getAvatarButton.interactable = false;
 
-				// new: hide instructions so can see progressText
+				// NEW: hide instructions so can see progressText
 				instruction1.gameObject.SetActive(false);
 
 				bool isLoaded = await metaPersonLoader.LoadModelAsync(message.Args["url"], p => progressText.text = string.Format("Downloading avatar: {0}%", (int)(p * 100)));
@@ -153,10 +158,11 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 					progressText.text = string.Empty;
 					// importControls.SetActive(false);
 
-					// extra: adding instruction/continue button to move to select therapist
+					// EXTRA: adding instruction/continue button to move to select therapist
 					importControls.SetActive(true);
 					SetScene(false);
-					// set child avatar to be called later in next scene
+
+					// sets child avatar to be called later in next scene
 					AvatarManager.Instance.SetChildAvatarUrl(message.Args["url"]);
 				}
 				else
@@ -175,6 +181,7 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
         {
 			title.gameObject.SetActive(active);
 			instruction1.gameObject.SetActive(active);
+			home_image.gameObject.SetActive(active);
 			getAvatarButton.gameObject.SetActive(active);
 			instruction2.gameObject.SetActive(!active);
 			userNameInputField.gameObject.SetActive(!active);

@@ -26,7 +26,6 @@ public class AvatarManager : MonoBehaviour
     }
 
     // NOTE: diverges from web code in that this sets child & therapist avatar instead of only 1 avatar
-
     public void SetChildAvatarUrl(string avatarUrl)
     {
         if (string.IsNullOrEmpty(avatarUrl))
