@@ -987,10 +987,10 @@ GameObject:
   m_Component:
   - component: {fileID: 740061186}
   - component: {fileID: 740061185}
-  - component: {fileID: 740061188}
   - component: {fileID: 740061187}
   - component: {fileID: 740061189}
   - component: {fileID: 740061191}
+  - component: {fileID: 740061192}
   m_Layer: 0
   m_Name: SceneHandler
   m_TagString: Untagged
@@ -1044,27 +1044,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d142c45e9ab264d34b151701db859a9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emotionClassifierUrl: http://127.0.0.1:5001/evaluate
---- !u!114 &740061188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 740061184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a68da3107b74a4fc3996eec03bf42b57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ollamaUrl: https://136d20cce0d9.ngrok-free.app/v1/completions
-  emotionClassifier: {fileID: 740061187}
-  sendButton: {fileID: 1297808559}
-  inputField: {fileID: 241420000}
-  chatContainer: {fileID: 1924796432}
-  userMessagePrefab: {fileID: 2394837905030822477, guid: d5276fc04cbff42a3a8b05e60dddd0d7, type: 3}
-  botMessagePrefab: {fileID: 8873116024370772147, guid: f2200711168a5476084109bb4339909b, type: 3}
-  scrollRect: {fileID: 2070788561}
+  emotionClassifierUrl: https://emotion-classifier-690645535633.europe-west2.run.app/evaluate
 --- !u!114 &740061189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1092,6 +1072,26 @@ MonoBehaviour:
   am: {fileID: 740061189}
   fs_child: {fileID: 372027259}
   fs_therapist: {fileID: 140500119}
+--- !u!114 &740061192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740061184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d7a1fcddba8449aba09360f84b3da63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  geminiApiKey: 
+  emotionClassifier: {fileID: 740061187}
+  sendButton: {fileID: 1297808559}
+  inputField: {fileID: 241420000}
+  chatContainer: {fileID: 1924796432}
+  userMessagePrefab: {fileID: 2394837905030822477, guid: d5276fc04cbff42a3a8b05e60dddd0d7, type: 3}
+  botMessagePrefab: {fileID: 8873116024370772147, guid: f2200711168a5476084109bb4339909b, type: 3}
+  scrollRect: {fileID: 2070788561}
 --- !u!1 &808187045
 GameObject:
   m_ObjectHideFlags: 0

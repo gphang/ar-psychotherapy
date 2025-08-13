@@ -17,7 +17,7 @@ public class EmotionResponse {
 
 public class EmotionClassifier : MonoBehaviour
 {
-    public string emotionClassifierUrl = "http://127.0.0.1:5001/evaluate";
+    public string emotionClassifierUrl;
 
     // To announce emotion state of user
     public static event System.Action<string> OnEmotionClassified;
@@ -54,21 +54,6 @@ public class EmotionClassifier : MonoBehaviour
 
                 // Announce user's emotional state to listening script (EmotionController.cs)
                 OnEmotionClassified?.Invoke(response.emotion);
-
-
-                // TODO: change logic to tailor to specific emotion class
-                // Emotion states from classifier: fear, love, instability, disgust, disappointment, shame, anger, jealous, sadness, envy, joy, guilt
-                // current animation states: idle, dance, happy, cry, angry, surprise, fearful, disgusted
-                // current expression states: idle, happy, sad, angry, fearful, disgusted, surprise
-                // if (text.Contains("joy") || text.Contains("love"))
-                //     return "happy";
-                // if (text.Contains("fear") || text.Contains("instability") || text.Contains("furious"))
-                //     return "fearful";
-                // if (text.Contains("sad") || text.Contains("cry") || text.Contains("unhappy"))
-                //     return "Sad";
-                // if (text.Contains("angry") || text.Contains("mad") || text.Contains("furious"))
-                //     return "Angry";
-                
             }
         }
     }

@@ -56,3 +56,6 @@ emotion_classifier/models
 emotion_classifier/T5_small_emotion.pt
 emotion_classifier/RoBERTa_12_emotions.pt
 ar-app/Assets/AvatarSelector/ChildhoodAvatarGenerate/UniWebView
+
+# api keys
+ar-app/Assets/.env

@@ -44,6 +44,9 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 		private void Start()
 		{
 			SetScene(true);
+			credentials.clientId = Environment.GetEnvironmentVariable("METAPERSON_CLIENT_ID");
+			credentials.clientSecret = Environment.GetEnvironmentVariable("METAPERSON_CLIENT_SECRET");
+			
 			if (credentials.IsEmpty())
 			{
 				progressText.text = "Account credentials are not provided!";
