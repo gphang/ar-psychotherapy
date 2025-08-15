@@ -16,12 +16,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// NEW ADDITION: gets names for user and therapist (default = User, Therapist)
-public static class GameData
-{
-    public static string UserName = "User";
-	public static string TherapistName = "Therapist";
-}
 
 namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 {

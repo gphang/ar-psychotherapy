@@ -88,6 +88,9 @@ namespace AvatarSDK.MetaPerson.Sample
             SetAvatarNavigationButtonsActive(false);
             continueButton.gameObject.SetActive(false);
             SetNameButtonsActive(true);
+
+            if (avatarIndex % 2 == 0) GameData.TherapistGender = "FEMALE";
+            else GameData.TherapistGender = "MALE";
         }
 
 

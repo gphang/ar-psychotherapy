@@ -63,6 +63,28 @@ public class SpeechRecognitionAlternative
 }
 
 
+// for Google Text-To-Speech API
+[System.Serializable]
+public class TextToSpeechRequest
+{
+    public SynthesisInput input;
+    public VoiceSelectionParams voice;
+    public AudioConfig audioConfig;
+}
+[System.Serializable]
+public class SynthesisInput { public string text; }
+[System.Serializable]
+public class VoiceSelectionParams 
+{ 
+    public string languageCode = "en-US"; 
+    public string ssmlGender;
+}
+[System.Serializable]
+public class AudioConfig { public string audioEncoding = "LINEAR16"; }
+[System.Serializable]
+public class TextToSpeechResponse { public string audioContent; }
+
+
 
 public class ChatbotController : MonoBehaviour
 {
@@ -70,6 +92,7 @@ public class ChatbotController : MonoBehaviour
     private string geminiModel = "gemini-2.5-flash";
     private string geminiUrl;
     private string speechToTextUrl;
+    private string textToSpeechUrl;
 
     [Header("Scene References")]
     public EmotionClassifier emotionClassifier;
@@ -77,6 +100,7 @@ public class ChatbotController : MonoBehaviour
     public TMP_InputField inputField;
     public Button recordButton;        // to enable STT
     public Button ARSceneNavigate;     // to switch to AR
+    public AudioSource audioSource;
 
     [Header("Chat UI")]
     public Transform chatContainer;
@@ -88,6 +112,7 @@ public class ChatbotController : MonoBehaviour
     private AudioClip recording;
     private string microphoneDeviceName;
     private bool isRecording = false;
+    private GameObject listeningIndicatorBubble;
     
     void Awake()
     {
@@ -104,20 +129,12 @@ public class ChatbotController : MonoBehaviour
     {
         geminiUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{geminiModel}:generateContent";
         speechToTextUrl = $"https://speech.googleapis.com/v1/speech:recognize?key={geminiApiKey}";
+        textToSpeechUrl = $"https://texttospeech.googleapis.com/v1/text:synthesize?key={geminiApiKey}";
 
         // for text input
-        if (sendButton != null)
-        {
-            sendButton.onClick.AddListener(SendMessageToGemini);
-        }
-        if (inputField != null)
-        {
-            inputField.onSubmit.AddListener((_) => SendMessageToGemini());
-        }
-        if (ARSceneNavigate != null)
-        {
-            ARSceneNavigate.onClick.AddListener(GoToARScene);
-        }
+        if (sendButton != null) sendButton.onClick.AddListener(SendMessageToGemini);
+        if (inputField != null) inputField.onSubmit.AddListener((_) => SendMessageToGemini());
+        if (ARSceneNavigate != null) ARSceneNavigate.onClick.AddListener(GoToARScene);
 
         // for voice input
         if (recordButton != null)
@@ -140,15 +157,20 @@ public class ChatbotController : MonoBehaviour
         if (Microphone.devices.Length > 0) microphoneDeviceName = Microphone.devices[0];
         else Debug.LogError("No microphone found.");
 
-        string welcomeMessage = $"Nice to meet you, {GameData.UserName}! I'm {GameData.TherapistName}, and I'm here to support you. If you'd prefer to talk instead of type, hold the microphone icon (top right corner) while speaking. At any point, tap the cube icon (bottom right of chat) to bring your childhood avatar to real life.\n\nSo, how are you feeling today?";
+        string welcomeMessage = $"Hi {GameData.UserName}, I'm {GameData.TherapistName}! Turn up your volume to hear me, and hold the mic icon (top right) to talk instead of type. Tap the cube icon below anytime to see your childhood avatar come to life.\n\nSo, how are you feeling today?";
+
+        // Call Text-To-Speech function
+        StartCoroutine(SynthesizeAndPlaySpeech(welcomeMessage));
         CreateMessageBubble(botMessagePrefab, welcomeMessage);
     }
 
     // logic purely for text from input field
     public void SendMessageToGemini()
     {
-        string userText = inputField.text;
+        // Stop TTS audio when users send a message
+        if (audioSource != null && audioSource.isPlaying) audioSource.Stop();
 
+        string userText = inputField.text;
         if (string.IsNullOrWhiteSpace(userText) || string.IsNullOrWhiteSpace(geminiApiKey)) return;
         
         inputField.text = "";
@@ -204,6 +226,9 @@ public class ChatbotController : MonoBehaviour
                 {
                     string botResponseText = response.candidates[0].content.parts[0].text;
                     CreateMessageBubble(botMessagePrefab, botResponseText.Trim());
+
+                    // Call Text-To-Speech function
+                    StartCoroutine(SynthesizeAndPlaySpeech(botResponseText));
                 }
                 else
                 {
@@ -218,6 +243,9 @@ public class ChatbotController : MonoBehaviour
 
     public void StartRecording()
     {
+        // Stop TTS audio when users start recording message
+        if (audioSource != null && audioSource.isPlaying) audioSource.Stop();
+
         if (isRecording || microphoneDeviceName == null) return;
         
         Debug.Log("Recording started...");
@@ -225,6 +253,8 @@ public class ChatbotController : MonoBehaviour
 
         // Start recording with a max length of 30 seconds
         recording = Microphone.Start(microphoneDeviceName, false, 30, 44100);
+
+        listeningIndicatorBubble = CreateMessageBubble(userMessagePrefab, "I'm listening...");
     }
 
     public void StopRecording()
@@ -263,6 +293,9 @@ public class ChatbotController : MonoBehaviour
 
             yield return webRequest.SendWebRequest();
 
+            // Destroy bubble showing users system is listening
+            if (listeningIndicatorBubble != null) Destroy(listeningIndicatorBubble);
+
             if (webRequest.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError($"Speech-to-Text Error: {webRequest.error}\nResponse: {webRequest.downloadHandler.text}");
@@ -278,15 +311,56 @@ public class ChatbotController : MonoBehaviour
                     string transcript = response.results[0].alternatives[0].transcript;
                     Debug.Log("Transcript: " + transcript);
                     
-                    // Put the transcribed text into the input field for user confirmation, or send directly
-                    // inputField.text = transcript;
-                    
-                    // For a seamless experience, we can send it directly to the chatbot
+                    // Send transcribed message directly to the chatbot
                     ProcessUserMessage(transcript);
                 }
                 else
                 {
                     Debug.LogWarning("Speech-to-Text: No transcript returned.");
+                }
+            }
+        }
+    }
+
+
+    ////////////////////// TEXT-TO-SPEECH API FUNCTIONS //////////////////////
+
+    private IEnumerator SynthesizeAndPlaySpeech(string text)
+    {
+        // Create the request payload with avatar's gender
+        var request = new TextToSpeechRequest
+        {
+            input = new SynthesisInput { text = text },
+            voice = new VoiceSelectionParams { ssmlGender = GameData.TherapistGender },
+            audioConfig = new AudioConfig()
+        };
+
+        string jsonBody = JsonUtility.ToJson(request);
+        
+        using (UnityWebRequest webRequest = new UnityWebRequest(textToSpeechUrl, "POST"))
+        {
+            webRequest.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonBody));
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError($"Text-to-Speech Error: {webRequest.error}\nResponse: {webRequest.downloadHandler.text}");
+            }
+            else
+            {
+                string responseJson = webRequest.downloadHandler.text;
+                TextToSpeechResponse response = JsonUtility.FromJson<TextToSpeechResponse>(responseJson);
+                
+                byte[] audioBytes = Convert.FromBase64String(response.audioContent);
+                AudioClip audioClip = WavUtility.ToAudioClip(audioBytes);
+
+                if (audioClip != null && audioSource != null)
+                {
+                    audioSource.clip = audioClip;
+                    audioSource.Play();
                 }
             }
         }
@@ -304,7 +378,7 @@ public class ChatbotController : MonoBehaviour
     
     //////////////////////////// UTILITY FUNCTIONS ////////////////////////////
 
-    private void CreateMessageBubble(GameObject prefab, string message)
+    private GameObject CreateMessageBubble(GameObject prefab, string message)
     {
         GameObject newBubble = Instantiate(prefab, chatContainer);
         TMP_Text messageText = newBubble.GetComponentInChildren<TMP_Text>();
@@ -313,6 +387,8 @@ public class ChatbotController : MonoBehaviour
             messageText.text = message;
         }
         StartCoroutine(ForceScrollDown());
+
+        return newBubble;
     }
 
     IEnumerator ForceScrollDown()
