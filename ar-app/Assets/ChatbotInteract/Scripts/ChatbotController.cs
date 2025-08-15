@@ -7,64 +7,91 @@ using System.Text;
 using System;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
+using System.IO;
+using UnityEngine.SceneManagement;
 
-// --- DATA STRUCTURES (No changes needed here) ---
 
+// for Gemini API (chatbot)
 [System.Serializable]
-public class GeminiRequest
+public class GeminiRequest { public Content[] contents; }
+[System.Serializable]
+public class Content { public Part[] parts; }
+[System.Serializable]
+public class Part { public string text; }
+[System.Serializable]
+public class GeminiResponse { public Candidate[] candidates; }
+[System.Serializable]
+public class Candidate { public Content content; }
+
+
+// for Google Speech-To-Text API
+[System.Serializable]
+public class SpeechRequest
 {
-    public Content[] contents;
+    public RecognitionConfig config;
+    public RecognitionAudio audio;
+}
+[System.Serializable]
+public class RecognitionConfig
+{
+    public string encoding = "LINEAR16";
+    public int sampleRateHertz;
+    public string languageCode = "en-US";
+}
+[System.Serializable]
+public class RecognitionAudio
+{
+    public string content;
 }
 
 [System.Serializable]
-public class Content
+public class SpeechResponse
 {
-    public Part[] parts;
+    public SpeechRecognitionResult[] results;
 }
-
 [System.Serializable]
-public class Part
+public class SpeechRecognitionResult
 {
-    public string text;
+    public SpeechRecognitionAlternative[] alternatives;
 }
-
 [System.Serializable]
-public class GeminiResponse
+public class SpeechRecognitionAlternative
 {
-    public Candidate[] candidates;
+    public string transcript;
+    public float confidence;
 }
 
-[System.Serializable]
-public class Candidate
-{
-    public Content content;
-}
 
-// --- MAIN CONTROLLER CLASS ---
 
-public class ChatbotController : MonoBehaviour // Renamed back to match your context
+public class ChatbotController : MonoBehaviour
 {
-    [Header("Gemini API Settings")]
     public string geminiApiKey; 
-    
-    // --- CHANGE 1: Updated model name ---
-    private string geminiModel = "gemini-2.5-flash"; // Updated to match your example
+    private string geminiModel = "gemini-2.5-flash";
     private string geminiUrl;
+    private string speechToTextUrl;
 
     [Header("Scene References")]
     public EmotionClassifier emotionClassifier;
     public Button sendButton;
     public TMP_InputField inputField;
+    public Button recordButton;        // to enable STT
+    public Button ARSceneNavigate;     // to switch to AR
 
     [Header("Chat UI")]
     public Transform chatContainer;
     public GameObject userMessagePrefab;
     public GameObject botMessagePrefab;
     public ScrollRect scrollRect;
+
+    // for microphone recording
+    private AudioClip recording;
+    private string microphoneDeviceName;
+    private bool isRecording = false;
     
     void Awake()
     {
-        // get API key from .env
+        // get API key from .env file
         geminiApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
 
         if (string.IsNullOrEmpty(geminiApiKey))
@@ -76,43 +103,67 @@ public class ChatbotController : MonoBehaviour // Renamed back to match your con
     void Start()
     {
         geminiUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{geminiModel}:generateContent";
+        speechToTextUrl = $"https://speech.googleapis.com/v1/speech:recognize?key={geminiApiKey}";
 
+        // for text input
         if (sendButton != null)
         {
             sendButton.onClick.AddListener(SendMessageToGemini);
         }
-        
         if (inputField != null)
         {
             inputField.onSubmit.AddListener((_) => SendMessageToGemini());
         }
+        if (ARSceneNavigate != null)
+        {
+            ARSceneNavigate.onClick.AddListener(GoToARScene);
+        }
 
-        string therapistName = GameData.TherapistName;
-        string userName = GameData.UserName;
-        string welcomeMessage = $"Nice to meet you, {userName}! My name is {therapistName}. How are you feeling today?";
+        // for voice input
+        if (recordButton != null)
+        {
+            // triggers for press + release record button
+            EventTrigger trigger = recordButton.gameObject.AddComponent<EventTrigger>();
+            
+            // press
+            var pointerDown = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+            pointerDown.callback.AddListener((data) => { StartRecording(); });
+            trigger.triggers.Add(pointerDown);
+
+            // release
+            var pointerUp = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
+            pointerUp.callback.AddListener((data) => { StopRecording(); });
+            trigger.triggers.Add(pointerUp);
+        }
+
+        // initialise microphone
+        if (Microphone.devices.Length > 0) microphoneDeviceName = Microphone.devices[0];
+        else Debug.LogError("No microphone found.");
+
+        string welcomeMessage = $"Nice to meet you, {GameData.UserName}! I'm {GameData.TherapistName}, and I'm here to support you. If you'd prefer to talk instead of type, hold the microphone icon (top right corner) while speaking. At any point, tap the cube icon (bottom right of chat) to bring your childhood avatar to real life.\n\nSo, how are you feeling today?";
         CreateMessageBubble(botMessagePrefab, welcomeMessage);
     }
 
+    // logic purely for text from input field
     public void SendMessageToGemini()
     {
         string userText = inputField.text;
 
-        if (string.IsNullOrWhiteSpace(userText) || string.IsNullOrWhiteSpace(geminiApiKey))
-        {
-            return;
-        }
-
-        CreateMessageBubble(userMessagePrefab, userText);
-        StartCoroutine(Send(userText));
-        
-        if (emotionClassifier != null)
-        {
-            emotionClassifier.RequestEmotion(userText);
-        }
+        if (string.IsNullOrWhiteSpace(userText) || string.IsNullOrWhiteSpace(geminiApiKey)) return;
         
         inputField.text = "";
+        ProcessUserMessage(userText);
     }
 
+    // handles logic for text & voice
+    private void ProcessUserMessage(string userText)
+    {
+        CreateMessageBubble(userMessagePrefab, userText);
+        if (emotionClassifier != null) emotionClassifier.RequestEmotion(userText);
+        StartCoroutine(Send(userText)); 
+    }
+
+    // sends user's message to Gemini
     private IEnumerator Send(string promptText)
     {
         var request = new GeminiRequest
@@ -123,7 +174,7 @@ public class ChatbotController : MonoBehaviour // Renamed back to match your con
                 {
                     parts = new Part[]
                     {
-                        new Part { text = $"You are an empathetic psychotherapist. The user's name is {GameData.UserName}. Your name is {GameData.TherapistName}. Recommend psychotherapy exercises based on user's message, keep your response concise and under 60 words. USER: {promptText}" }
+                        new Part { text = $"You are an empathetic psychotherapist. The user's name is {GameData.UserName}. Recommend psychotherapy exercises based on user's message, keep your response concise and under 60 words. USER: {promptText}" }
                     }
                 }
             }
@@ -136,16 +187,13 @@ public class ChatbotController : MonoBehaviour // Renamed back to match your con
             byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
             webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
             webRequest.downloadHandler = new DownloadHandlerBuffer();
-            
-            // --- CHANGE 3: API key is now added as a header ---
             webRequest.SetRequestHeader("Content-Type", "application/json");
             webRequest.SetRequestHeader("X-goog-api-key", geminiApiKey);
-
             yield return webRequest.SendWebRequest();
 
             if (webRequest.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"Error: {webRequest.error}\nResponse: {webRequest.downloadHandler.text}");
+                Debug.LogError($"Gemini Error: {webRequest.error}\nResponse: {webRequest.downloadHandler.text}");
             }
             else
             {
@@ -165,6 +213,97 @@ public class ChatbotController : MonoBehaviour // Renamed back to match your con
         }
     }
 
+
+    ////////////////////// SPEECH-TO-TEXT API FUNCTIONS //////////////////////
+
+    public void StartRecording()
+    {
+        if (isRecording || microphoneDeviceName == null) return;
+        
+        Debug.Log("Recording started...");
+        isRecording = true;
+
+        // Start recording with a max length of 30 seconds
+        recording = Microphone.Start(microphoneDeviceName, false, 30, 44100);
+    }
+
+    public void StopRecording()
+    {
+        if (!isRecording) return;
+        
+        Debug.Log("Recording stopped...");
+        Microphone.End(microphoneDeviceName);
+        isRecording = false;
+
+        // process audio
+        if (recording != null) StartCoroutine(SendAudioToSpeechAPI(recording));
+    }
+
+    private IEnumerator SendAudioToSpeechAPI(AudioClip clip)
+    {
+        // Convert audio clip to WAV byte array and then to Base64
+        byte[] wavData = AudioToWav(clip);
+        string base64Audio = Convert.ToBase64String(wavData);
+
+        // Create the request payload
+        var request = new SpeechRequest
+        {
+            config = new RecognitionConfig { sampleRateHertz = clip.frequency, },
+            audio = new RecognitionAudio { content = base64Audio }
+        };
+
+        string jsonBody = JsonUtility.ToJson(request);
+
+        using (UnityWebRequest webRequest = new UnityWebRequest(speechToTextUrl, "POST"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError($"Speech-to-Text Error: {webRequest.error}\nResponse: {webRequest.downloadHandler.text}");
+            }
+            else
+            {
+                string responseJson = webRequest.downloadHandler.text;
+                SpeechResponse response = JsonUtility.FromJson<SpeechResponse>(responseJson);
+
+                if (response.results != null && response.results.Length > 0)
+                {
+                    // Get the most likely transcript
+                    string transcript = response.results[0].alternatives[0].transcript;
+                    Debug.Log("Transcript: " + transcript);
+                    
+                    // Put the transcribed text into the input field for user confirmation, or send directly
+                    // inputField.text = transcript;
+                    
+                    // For a seamless experience, we can send it directly to the chatbot
+                    ProcessUserMessage(transcript);
+                }
+                else
+                {
+                    Debug.LogWarning("Speech-to-Text: No transcript returned.");
+                }
+            }
+        }
+    }
+
+
+    /////////////////////////// AR SCENE NAVIGATION ///////////////////////////
+
+    public void GoToARScene()
+    {
+        // following build number (under build settings)
+        SceneManager.LoadScene(2);
+    }
+
+    
+    //////////////////////////// UTILITY FUNCTIONS ////////////////////////////
+
     private void CreateMessageBubble(GameObject prefab, string message)
     {
         GameObject newBubble = Instantiate(prefab, chatContainer);
@@ -181,8 +320,40 @@ public class ChatbotController : MonoBehaviour // Renamed back to match your con
         yield return new WaitForEndOfFrame();
         scrollRect.verticalNormalizedPosition = 0f;
     }
-}
 
+    byte[] AudioToWav(AudioClip clip)
+    {
+        using (var memoryStream = new MemoryStream())
+        {
+            using (var writer = new BinaryWriter(memoryStream))
+            {
+                // WAV header
+                writer.Write(Encoding.ASCII.GetBytes("RIFF"));
+                writer.Write(36 + clip.samples * 2);
+                writer.Write(Encoding.ASCII.GetBytes("WAVE"));
+                writer.Write(Encoding.ASCII.GetBytes("fmt "));
+                writer.Write(16);
+                writer.Write((ushort)1); // Audio format 1 (PCM)
+                writer.Write((ushort)clip.channels);
+                writer.Write(clip.frequency);
+                writer.Write(clip.frequency * clip.channels * 2); // Byte rate
+                writer.Write((ushort)(clip.channels * 2)); // Block align
+                writer.Write((ushort)16); // Bits per sample
+                writer.Write(Encoding.ASCII.GetBytes("data"));
+                writer.Write(clip.samples * clip.channels * 2);
+
+                // Audio data
+                float[] samples = new float[clip.samples * clip.channels];
+                clip.GetData(samples, 0);
+                foreach (var sample in samples)
+                {
+                    writer.Write((short)(sample * 32767.0f));
+                }
+            }
+            return memoryStream.ToArray();
+        }
+    }
+}
 
 
 

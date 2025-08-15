@@ -8,8 +8,6 @@ public class AvatarDisplay : MonoBehaviour
 {
     public RuntimeAnimatorController avatarController;
 
-    
-    // Changed back to a single TextMeshProUGUI reference
     [Header("UI Elements")]
     public TextMeshProUGUI progressText;
 
@@ -26,7 +24,6 @@ public class AvatarDisplay : MonoBehaviour
 
     async void Start()
     {
-        // Now using the component reference to set the GameObject active
         progressText.gameObject.SetActive(true);
         UpdateProgressText();
 

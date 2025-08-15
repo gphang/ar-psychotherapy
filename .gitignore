@@ -59,3 +59,4 @@ ar-app/Assets/AvatarSelector/ChildhoodAvatarGenerate/UniWebView
 
 # api keys
 ar-app/Assets/.env
+ar-app/Assets/Resources/env.txt

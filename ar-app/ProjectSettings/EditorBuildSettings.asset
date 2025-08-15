@@ -11,8 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/ChatbotInteract/ChatbotScene.unity
     guid: 00e34f90904084bf299af44ff82aee17
-  - enabled: 0
-    path: Assets/AR Display/ARScene.unity
+  - enabled: 1
+    path: Assets/ARDisplay/ARScene.unity
     guid: f1e6ff0217a2b4ae08a92a890244b72a
   m_configObjects:
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 521b0ed19dbc54a6c96f6de53321dea9, type: 2}
