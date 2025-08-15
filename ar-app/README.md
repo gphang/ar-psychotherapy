@@ -6,6 +6,7 @@ Users begin by selecting from a set of pre-loaded MetaPerson avatars or customiz
 
 MetaPerson Avatar Documentation: https://docs.metaperson.avatarsdk.com/
 
+Store your client ID and secret in a env.txt file, kept under the Resources folder.
 
 ## Project Structure
 - `Assets/` - Main Unity assets including scenes, scripts, and prefabs
@@ -13,6 +14,13 @@ MetaPerson Avatar Documentation: https://docs.metaperson.avatarsdk.com/
 - `Scenes/` - Unity scenes used in AR rendering
 - `TextMesh Pro/` - Font rendering (core files only, examples/docs excluded)
 - `.gitignore` - Configured to avoid Unity-generated and large unnecessary files
+
+
+## Cloud Deployment
+This application was created using Google Cloud services. To run it on the cloud, please store your API key in your env.txt file enable the following services on your Google Cloud console:
+* Generative Language API
+* Cloud Speech-to-Text API
+* Cloud Text-to-Speech API
 
 
 ## Local Deployment

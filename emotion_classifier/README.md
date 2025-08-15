@@ -9,3 +9,16 @@ Example terminal line commands you can try running for local testing of model:
 python app.py
 curl -X POST -H "Content-Type: application/json" -d '{"text": "im happy"}' http://0.0.0.0:5001/evaluate
 ```
+
+
+## Cloud Deployment
+After setting up your gcloud CLI, run the following to build the Docker image, push, and deploy to Cloud Run:
+```
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$IMAGE_NAME
+gcloud run deploy $IMAGE_NAME \
+  --image gcr.io/$PROJECT_ID/$IMAGE_NAME \
+  --platform managed \
+  --region $REGION \
+  --memory 2Gi \
+  --allow-unauthenticated
+```
