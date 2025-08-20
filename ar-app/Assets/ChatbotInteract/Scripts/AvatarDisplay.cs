@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 using AvatarSDK.MetaPerson.Loader;
 using AvatarSDK.MetaPerson.Sample;
 using TMPro;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class AvatarDisplay : MonoBehaviour
 {
@@ -10,6 +13,8 @@ public class AvatarDisplay : MonoBehaviour
 
     [Header("UI Elements")]
     public TextMeshProUGUI progressText;
+    public Button ARSceneNavigate;     // to switch to AR
+    // public Button homeButton;
 
     [Header("Avatar Loaders")]
     public MetaPersonLoader childMetaPersonLoader;
@@ -29,13 +34,24 @@ public class AvatarDisplay : MonoBehaviour
 
         Task childTask = LoadChildAvatarAsync();
         Task therapistTask = LoadTherapistAvatarAsync();
+        ARSceneNavigate.interactable = false;
 
         await Task.WhenAll(childTask, therapistTask);
 
         Debug.Log("Both avatars finished loading.");
         // Using the component reference to set the GameObject inactive
         progressText.gameObject.SetActive(false);
+        ARSceneNavigate.interactable = true;
+        if (ARSceneNavigate != null) ARSceneNavigate.onClick.AddListener(GoToARScene);
     }
+
+
+    public void GoToARScene()
+    {
+        // following build number (under build settings)
+        SceneManager.LoadScene(2);
+    }
+
 
     private void UpdateProgressText()
     {

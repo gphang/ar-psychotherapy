@@ -11,4 +11,10 @@ A mobile app that enables immersive, cost-efficient psychotherapy experiences. T
 - 📱 Augmented Reality Experience - Render your childhood avatar in AR using Unity
 - 🧘 Personalised Mental Health Exercises - Activities and mindfulness routines tailored to your emotional state
 
-![ChatbotScreen](demo_imgs/ChatbotScreen.png)
+iOS Application currently being deployed on TestFlight:
+https://testflight.apple.com/join/Z8WCW8Dd
+
+<!-- 
+<p align="center">
+  <img src="demo_imgs/ChatbotScreen.png" alt="ChatbotScreen" width="30%">
+</p> -->

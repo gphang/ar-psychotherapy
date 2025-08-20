@@ -14,27 +14,34 @@ namespace AvatarSDK.MetaPerson.Sample
 {
     public class TherapistAvatarSelect : MonoBehaviour
     {
-        // objects from previous scenes
+        [Header("Child Scene Objects")]
         public Button loadAvatarButton;
         public MetaPersonLoader childMetaPersonLoader;
-        public TMP_Text instruction2;
+        public TMP_Text shareCodeInfo;
         public TMP_InputField userNameInputField;
 
+        [Header("Generating Therapist Metaperson")]
         public Text progressText;
         [SerializeField] private MetaPersonLoader mpl;
 
+        [Header("Selecting Therapist Appearance")]
         public Button previousAvatarButton;
         public Button nextAvatarButton;
         public TMP_Text instruction3;
         public Button continueButton;
 
+        [Header("Set Therapist Name")]
         public TMP_Text nameInstruction;
         public TMP_InputField inputName;
 
-        public List<string> avatarURLs = new List<string>()
+        private List<string> avatarURLs = new List<string>()
         {
             "16568EC8",
-            "731634B1"
+            "731634B1",
+            "2DFC6D2D",
+            "7E4D5BCB",
+            "855B92C1",
+            "66C89E28"
         };
         private int avatarIndex = 0;  // tracks which avatar is currently loaded
 
@@ -223,8 +230,7 @@ namespace AvatarSDK.MetaPerson.Sample
         {
             loadAvatarButton.gameObject.SetActive(false);
             childMetaPersonLoader.gameObject.SetActive(false);
-            instruction2.gameObject.SetActive(false);
-            userNameInputField.gameObject.SetActive(false);
+            shareCodeInfo.gameObject.SetActive(false);
 
             progressText.gameObject.SetActive(false);
             SetAvatarNavigationButtonsActive(true);

@@ -99,7 +99,6 @@ public class ChatbotController : MonoBehaviour
     public Button sendButton;
     public TMP_InputField inputField;
     public Button recordButton;        // to enable STT
-    public Button ARSceneNavigate;     // to switch to AR
     public AudioSource audioSource;
 
     [Header("Chat UI")]
@@ -134,7 +133,6 @@ public class ChatbotController : MonoBehaviour
         // for text input
         if (sendButton != null) sendButton.onClick.AddListener(SendMessageToGemini);
         if (inputField != null) inputField.onSubmit.AddListener((_) => SendMessageToGemini());
-        if (ARSceneNavigate != null) ARSceneNavigate.onClick.AddListener(GoToARScene);
 
         // for voice input
         if (recordButton != null)
@@ -157,7 +155,7 @@ public class ChatbotController : MonoBehaviour
         if (Microphone.devices.Length > 0) microphoneDeviceName = Microphone.devices[0];
         else Debug.LogError("No microphone found.");
 
-        string welcomeMessage = $"Hi {GameData.UserName}, I'm {GameData.TherapistName}! Turn up your volume to hear me, and hold the mic icon (top right) to talk instead of type. Tap the cube icon below anytime to see your childhood avatar come to life.\n\nSo, how are you feeling today?";
+        string welcomeMessage = $"Hi {GameData.UserName}, I'm {GameData.TherapistName}! Unmute your phone and turn up your volume to hear me, and hold the mic icon (top right) to talk instead of type. Tap the cube icon below anytime to see your childhood avatar come to life.\n\nSo, how are you feeling today?";
 
         // Call Text-To-Speech function
         StartCoroutine(SynthesizeAndPlaySpeech(welcomeMessage));
@@ -364,15 +362,6 @@ public class ChatbotController : MonoBehaviour
                 }
             }
         }
-    }
-
-
-    /////////////////////////// AR SCENE NAVIGATION ///////////////////////////
-
-    public void GoToARScene()
-    {
-        // following build number (under build settings)
-        SceneManager.LoadScene(2);
     }
 
     

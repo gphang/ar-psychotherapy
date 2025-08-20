@@ -403,6 +403,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3399267183235669353, guid: e2b1f2ee0d7364a929a80ebfbbab1f89, type: 3}
+      propertyPath: animatorController
+      value: 
+      objectReference: {fileID: 9100000, guid: 20a95633b66cbc24c9635223a675ae09, type: 2}
     - target: {fileID: 3399267183235669355, guid: e2b1f2ee0d7364a929a80ebfbbab1f89, type: 3}
       propertyPath: m_Name
       value: Therapist MetaPersonModel
@@ -1014,6 +1018,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   avatarController: {fileID: 9100000, guid: 4fe6fbf1e20183143a588d61ca260bd1, type: 2}
   progressText: {fileID: 1089243310}
+  ARSceneNavigate: {fileID: 1196557125}
   childMetaPersonLoader: {fileID: 372027257}
   therapistMetaPersonLoader: {fileID: 140500117}
   am: {fileID: 740061189}
@@ -1091,7 +1096,6 @@ MonoBehaviour:
   sendButton: {fileID: 1297808559}
   inputField: {fileID: 241420000}
   recordButton: {fileID: 2138910766}
-  ARSceneNavigate: {fileID: 1196557125}
   audioSource: {fileID: 740061193}
   chatContainer: {fileID: 1924796432}
   userMessagePrefab: {fileID: 2394837905030822477, guid: d5276fc04cbff42a3a8b05e60dddd0d7, type: 3}

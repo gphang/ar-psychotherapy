@@ -1,13 +1,3 @@
-/* Copyright (C) Itseez3D, Inc. - All Rights Reserved
-* You may not use this file except in compliance with an authorized license
-* Unauthorized copying of this file, via any medium is strictly prohibited
-* Proprietary and confidential
-* UNLESS REQUIRED BY APPLICABLE LAW OR AGREED BY ITSEEZ3D, INC. IN WRITING, SOFTWARE DISTRIBUTED UNDER THE LICENSE IS DISTRIBUTED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR
-* CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED
-* See the License for the specific language governing permissions and limitations under the License.
-* Written by Itseez3D, Inc. <support@avatarsdk.com>, October 2023
-*/
-
 using AvatarSDK.MetaPerson.Loader;
 using System;
 using System.Collections;
@@ -16,11 +6,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+using System.Text;
+using System.Threading.Tasks;
+
+using UnityEngine.Networking; // For UnityWebRequest
+using System.Security.Cryptography; // For MD5 hashing
+
 
 namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 {
 	public class MobileUnitySampleHandler : MonoBehaviour
 	{
+		[Header("Generating Metaperson")]
 		public AccountCredentials credentials;
 		public MetaPersonLoader metaPersonLoader;
 		public GameObject uniWebViewGameObject;
@@ -28,16 +25,20 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 		public Button getAvatarButton;
 		public Text progressText;
 
-		public TMP_Text title;
-		public TMP_Text instruction1;
-		public Image home_image;
+		[Header("Getting User Name")]
 		public TMP_Text instruction2;
 		public TMP_InputField userNameInputField;
+
+		[Header("Generating Share Code")]
+		public Button generateShareCodeButton;
+		public TMP_Text shareCodeInfo;
 		public Button selectTherapistButton;
+		public Button returnHome;
+
+		private string childAvatarURL = "";
 
 		private void Start()
 		{
-			SetScene(true);
 			credentials.clientId = Environment.GetEnvironmentVariable("METAPERSON_CLIENT_ID");
 			credentials.clientSecret = Environment.GetEnvironmentVariable("METAPERSON_CLIENT_SECRET");
 			
@@ -50,6 +51,10 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 
 		public void OnGetAvatarButtonClick()
 		{
+			instruction2.gameObject.SetActive(true);
+			userNameInputField.gameObject.SetActive(true);
+			generateShareCodeButton.gameObject.SetActive(true);
+
 			UniWebView uniWebView = uniWebViewGameObject.GetComponent<UniWebView>();
 			if (uniWebView == null)
 			{
@@ -62,17 +67,6 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 			uniWebView.OnMessageReceived += OnMessageReceived;
 			uniWebView.Load("https://mobile.metaperson.avatarsdk.com/generator");
 			uniWebView.Show();
-		}
-
-		// Set user's name for later use
-		public void OnContinueButtonClick()
-		{
-			string userName = userNameInputField.text.Trim();
-			if (!string.IsNullOrEmpty(userName))
-			{
-				GameData.UserName = userName;
-				Debug.Log($"<color=cyan>SCENE 1:</color> Updating UserName from to '{userName}'");
-			}
 		}
 
 		private void OnPageFinished(UniWebView webView, int statusCode, string url)
@@ -141,26 +135,28 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 		{
 			if (message.Path == "model_exported")
 			{
-				Debug.LogWarningFormat("Start avatar loading from url: {0}", message.Args["url"]);
+				// set URL to use later for storing in db
+				childAvatarURL = message.Args["url"];
+
+				Debug.LogWarningFormat("Start avatar loading from url: {0}", childAvatarURL);
 
 				webView.Hide();
 				getAvatarButton.interactable = false;
 
 				// NEW: hide instructions so can see progressText
-				instruction1.gameObject.SetActive(false);
+				// instruction1.gameObject.SetActive(false);
 
-				bool isLoaded = await metaPersonLoader.LoadModelAsync(message.Args["url"], p => progressText.text = string.Format("Downloading avatar: {0}%", (int)(p * 100)));
+				bool isLoaded = await metaPersonLoader.LoadModelAsync(childAvatarURL, p => progressText.text = string.Format("Downloading avatar: {0}%", (int)(p * 100)));
 				if (isLoaded)
 				{
 					progressText.text = string.Empty;
 					// importControls.SetActive(false);
 
-					// EXTRA: adding instruction/continue button to move to select therapist
+					// adding instruction/continue button to move to select therapist
 					importControls.SetActive(true);
-					SetScene(false);
 
 					// sets child avatar to be called later in next scene
-					AvatarManager.Instance.SetChildAvatarUrl(message.Args["url"]);
+					AvatarManager.Instance.SetChildAvatarUrl(childAvatarURL);
 				}
 				else
 				{
@@ -172,17 +168,150 @@ namespace AvatarSDK.MetaPerson.MobileIntegrationSample
 		}
 
 
-		//////////////////////////// SET SCENE OBJECTS ////////////////////////////
+		//////////////////////// STORING AVATAR LOGIC ////////////////////////
+		
+		// Serializable class matching the JSON data structure from the backend
+		[Serializable]
+		public class AvatarDataStructure
+		{
+			public string code;
+			public string mp_code;
+			public string avatar_url;
+			public string avatar_name;
+		}
+		
 
-		private void SetScene(bool active)
-        {
-			title.gameObject.SetActive(active);
-			instruction1.gameObject.SetActive(active);
-			home_image.gameObject.SetActive(active);
-			getAvatarButton.gameObject.SetActive(active);
-			instruction2.gameObject.SetActive(!active);
-			userNameInputField.gameObject.SetActive(!active);
-			selectTherapistButton.gameObject.SetActive(!active);
-        }
+		// Triggered when the "Generate Share Code" button is clicked
+		public void OnClick_GenerateShareCodeButton()
+		{
+			// Get user's name from text input
+			string userName = userNameInputField.text.Trim();
+			if (!string.IsNullOrEmpty(userName))
+			{
+				GameData.UserName = userName;
+				Debug.Log($"<color=cyan>SCENE 1:</color> Updating UserName from to '{userName}'");
+			}
+			else userName = "User";
+
+			Debug.Log($"Retrieved Avatar URL: {childAvatarURL}");
+			shareCodeInfo.text = "";
+
+			// Generate a unique 8-character code
+			string uniqueCode = GenerateUniqueCode(childAvatarURL);
+
+			// Store the code, avatar URL, and avatar name in the database
+			StartCoroutine(StoreAvatarData(uniqueCode, childAvatarURL, userName));
+
+			TransitionScene();
+		}
+
+		// Method to generate a unique 8-character code based on input string
+		private string GenerateUniqueCode(string input)
+		{
+			using (MD5 md5 = MD5.Create())
+			{
+				byte[] inputBytes = Encoding.ASCII.GetBytes(input + DateTime.Now.Ticks);
+				byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+				// Convert hash to hexadecimal string and take first 8 characters
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < 4; i++) // 4 bytes * 2 hex chars = 8 characters
+				{
+					sb.Append(hashBytes[i].ToString("X2"));
+				}
+				return sb.ToString();
+			}
+		}
+
+		// Method to extract metaperson code from avatar_url
+		private string ExtractMetapersonCode(string avatarUrl)
+		{
+			try
+			{
+				Uri uri = new Uri(avatarUrl);
+				string[] segments = uri.AbsolutePath.Split('/');
+				int avatarsIndex = Array.IndexOf(segments, "avatars");
+				if (avatarsIndex != -1 && segments.Length > avatarsIndex + 1)
+				{
+					return segments[avatarsIndex + 1];
+				}
+				return null;
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
+
+		// Coroutine to store avatar data in the database
+		private IEnumerator StoreAvatarData(string code, string avatarUrl, string avatarName)
+		{
+			// Extract mp_code from avatarUrl
+			string metapersonCode = ExtractMetapersonCode(avatarUrl);
+
+			if (string.IsNullOrEmpty(metapersonCode))
+			{
+				Debug.Log("Invalid avatar URL. Cannot extract Metaperson code.");
+				shareCodeInfo.text = "We're sorry, but we couldn't extract your avatar's link. Please try again.";
+				selectTherapistButton.gameObject.SetActive(false);
+				returnHome.gameObject.SetActive(true);
+				yield break;
+			}
+
+			// Create an instance of the AvatarDataToStore class
+			AvatarDataStructure data = new AvatarDataStructure
+			{
+				code = code,
+				mp_code = metapersonCode,
+				avatar_url = avatarUrl,
+				avatar_name = avatarName
+			};
+
+			string jsonData = JsonUtility.ToJson(data);
+
+			// Log the JSON data being sent
+			Debug.Log("JSON Data being sent: " + jsonData);
+
+			// URL of your backend API endpoint for storing data
+			string storeUrl = "https://avatar-backend.xy2119.workers.dev/storeAvatarData";
+
+			UnityWebRequest storeRequest = new UnityWebRequest(storeUrl, "POST");
+			byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+			storeRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+			storeRequest.downloadHandler = new DownloadHandlerBuffer();
+			storeRequest.SetRequestHeader("Content-Type", "application/json");
+
+			// Send the POST request and wait for response
+			yield return storeRequest.SendWebRequest();
+
+			if (storeRequest.result == UnityWebRequest.Result.Success)
+			{
+				Debug.Log("Avatar data stored successfully.");
+
+				// Display the unique code to the user
+				shareCodeInfo.text = $"Your unique code: {code}\n\nPlease save this to load your avatar directly in the future :)";
+			}
+			else
+			{
+				Debug.LogError("Error storing avatar data: " + storeRequest.error);
+				Debug.LogError("Response: " + storeRequest.downloadHandler.text);
+				shareCodeInfo.text += "\nWe're sorry, but we couldn't save your avatar data. Please try again.";
+				selectTherapistButton.gameObject.SetActive(false);
+				returnHome.gameObject.SetActive(true);
+			}    
+		}
+
+
+		////////////////////////// SET SCENE OBJECTS //////////////////////////
+
+		private void TransitionScene()
+		{
+			instruction2.gameObject.SetActive(false);
+			userNameInputField.gameObject.SetActive(false);
+			generateShareCodeButton.gameObject.SetActive(false);
+			selectTherapistButton.gameObject.SetActive(true);
+			shareCodeInfo.gameObject.SetActive(true);
+		}
 	}
 }
