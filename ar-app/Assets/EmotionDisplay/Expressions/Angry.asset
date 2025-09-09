@@ -14,32 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlendShapeWeights:
   - index: 0
-    weight: 0.6
+    weight: 1
   - index: 1
-    weight: 0.6
+    weight: 1
   - index: 5
     weight: 0.2
   - index: 6
-    weight: 0.7
+    weight: 1
   - index: 7
-    weight: 0.7
+    weight: 1
   - index: 18
-    weight: 0.3
+    weight: 0.54
   - index: 19
-    weight: 0.3
+    weight: 0.549
   - index: 29
     weight: 0.5
   - index: 30
     weight: 0.5
-  - index: 39
-    weight: 0.2
-  - index: 40
-    weight: 0.2
+  - index: 37
+    weight: 0.858
   - index: 41
     weight: 1
   - index: 42
     weight: 1
   - index: 49
-    weight: 0.4
+    weight: 0.289
   - index: 50
-    weight: 0.4
+    weight: 0.302

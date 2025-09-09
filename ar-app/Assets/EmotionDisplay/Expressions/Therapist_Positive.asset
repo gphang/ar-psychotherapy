@@ -10,32 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba87a3b01d41d4aa2bfcec9f4d2bb59f, type: 3}
-  m_Name: Sad
+  m_Name: Therapist_Positive
   m_EditorClassIdentifier: 
   BlendShapeWeights:
-  - index: 0
-    weight: 1
-  - index: 1
-    weight: 1
-  - index: 2
-    weight: 0.664
-  - index: 3
-    weight: 0.674
+  - index: 6
+    weight: 0.2
+  - index: 7
+    weight: 0.2
   - index: 8
-    weight: 0.2
-  - index: 9
-    weight: 0.2
-  - index: 19
-    weight: 0.545
-  - index: 26
     weight: 0.1
-  - index: 29
-    weight: 0.899
-  - index: 30
-    weight: 0.919
-  - index: 37
-    weight: 0.481
-  - index: 41
-    weight: 0.536
-  - index: 42
-    weight: 0.546
+  - index: 9
+    weight: 0.1
+  - index: 18
+    weight: 0.1
+  - index: 19
+    weight: 0.1
+  - index: 24
+    weight: 0.2
+  - index: 43
+    weight: 0.9
+  - index: 44
+    weight: 0.9

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba87a3b01d41d4aa2bfcec9f4d2bb59f, type: 3}
-  m_Name: Sad
+  m_Name: Therapist_Empathy
   m_EditorClassIdentifier: 
   BlendShapeWeights:
   - index: 0
@@ -18,24 +18,28 @@ MonoBehaviour:
   - index: 1
     weight: 1
   - index: 2
-    weight: 0.664
-  - index: 3
-    weight: 0.674
+    weight: 0.921
+  - index: 6
+    weight: 0.268
+  - index: 7
+    weight: 0.301
   - index: 8
     weight: 0.2
   - index: 9
     weight: 0.2
+  - index: 10
+    weight: 0.077
+  - index: 11
+    weight: 0.093
   - index: 19
-    weight: 0.545
+    weight: 0.395
   - index: 26
     weight: 0.1
   - index: 29
-    weight: 0.899
+    weight: 0.543
   - index: 30
-    weight: 0.919
+    weight: 0.527
   - index: 37
-    weight: 0.481
+    weight: 0.498
   - index: 41
-    weight: 0.536
-  - index: 42
-    weight: 0.546
+    weight: 0.175

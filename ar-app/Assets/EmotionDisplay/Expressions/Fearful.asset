@@ -13,7 +13,15 @@ MonoBehaviour:
   m_Name: Fearful
   m_EditorClassIdentifier: 
   BlendShapeWeights:
+  - index: 0
+    weight: 0.518
+  - index: 1
+    weight: 0.54
   - index: 2
+    weight: 1
+  - index: 3
+    weight: 1
+  - index: 4
     weight: 1
   - index: 6
     weight: -0.5
@@ -23,19 +31,19 @@ MonoBehaviour:
     weight: 0.5
   - index: 21
     weight: 0.5
+  - index: 24
+    weight: 0.412
+  - index: 26
+    weight: 0.252
   - index: 29
-    weight: 0.2
+    weight: 0.886
   - index: 30
-    weight: 0.2
+    weight: 0.88
   - index: 31
-    weight: 0.5
-  - index: 33
-    weight: 0.5
+    weight: 0.505
   - index: 34
-    weight: 0.5
+    weight: 0.537
   - index: 47
-    weight: 0.5
-  - index: 48
     weight: 0.5
   - index: 49
     weight: -1

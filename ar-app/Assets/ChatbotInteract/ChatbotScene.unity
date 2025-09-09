@@ -505,18 +505,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transitionSpeed: 1
   idle: {fileID: 11400000, guid: 13884c0d3b49f9242a72ea4f4d5299b5, type: 2}
-  fear: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
-  love: {fileID: 11400000, guid: 70c31f88b0932514699ab90dbdeb8961, type: 2}
-  instability: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
-  disgust: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
-  disappointment: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
-  shame: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
-  anger: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
-  jealous: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
-  sadness: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
-  envy: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
-  joy: {fileID: 11400000, guid: 70c31f88b0932514699ab90dbdeb8961, type: 2}
-  guilt: {fileID: 11400000, guid: 9d580758c5641424ba041db0e4ad9e95, type: 2}
+  fear: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
+  love: {fileID: 11400000, guid: 19c29601e49e44bf9baedc4634b970ef, type: 2}
+  instability: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
+  disgust: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
+  disappointment: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
+  shame: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
+  anger: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
+  jealous: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
+  sadness: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
+  envy: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
+  joy: {fileID: 11400000, guid: 19c29601e49e44bf9baedc4634b970ef, type: 2}
+  guilt: {fileID: 11400000, guid: 6875807e627d84ef8aa39911e3519afa, type: 2}
 --- !u!1 &241419998
 GameObject:
   m_ObjectHideFlags: 0
