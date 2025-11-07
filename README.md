@@ -11,10 +11,17 @@ A mobile app that enables immersive, cost-efficient psychotherapy experiences. T
 - 📱 Augmented Reality Experience - Render your childhood avatar in AR using Unity
 - 🧘 Personalised Mental Health Exercises - Activities and mindfulness routines tailored to your emotional state
 
-iOS Application currently being deployed on TestFlight:
-https://testflight.apple.com/join/Z8WCW8Dd
-
-<!-- 
 <p align="center">
-  <img src="demo_imgs/ChatbotScreen.png" alt="ChatbotScreen" width="30%">
-</p> -->
+  <img src="demo_imgs/ChildAvatar.png" alt="Emotion Classifier Screen" width="25%">
+  &nbsp; &nbsp; <img src="demo_imgs/TherapistAvatar.png" alt="AR Session Screen" width="25%">
+  &nbsp; &nbsp; <img src="demo_imgs/ChatRoom.png" alt="Chatbot Screen" width="25%">
+</p>
+
+Video demo: https://drive.google.com/file/d/1aE316lL3dd5kz9zKAdf5ekwgYWG5QxgV/view?usp=drive_link
+
+
+## GCP Services
+APIs: Gemini for Google Cloud, Speech-to-Text, Text-to-Speech
+- For chatbot interaction page, to generate responses, allow for speech input & generate speech response
+Cloud Run + Artifact Registry + Cloud Storage
+- Create & push Docker image for emotion classifier Flask web server
